@@ -1,0 +1,54 @@
+[workspace]
+members = [
+    "migration",
+]
+
+[package]
+name = "rwa-indexer"
+version = "0.1.0"
+edition = "2021"
+authors = ["Helius Labs"]
+homepage = "https://helius.dev"
+license = "Apache-2.0"
+keywords = ["solana", "rwa-indexer"]
+
+resolver = "2"
+
+[workspace.dependencies]
+async-std = {version = "^1", features = ["attributes", "tokio1"]}
+anyhow = "1.0.79"
+borsh = "0.10.3"
+bs58 = "0.4.0"
+env_logger = "0.10.0"
+enum-iterator = "1.2.0"
+enum-iterator-derive = "1.1.0"
+insta = {version = "1.34.0", features = ["json"]}
+log = "0.4.17"
+thiserror = "1.0.31"
+lazy_static = "1.4.0"
+light-poseidon = "0.2.0"
+sea-orm = {version = "0.10.6", features = [
+  "macros",
+  "runtime-tokio-rustls",
+  "sqlx-postgres",
+  "with-chrono",
+  "mock",
+]}
+serde_json = "1.0.82"
+serde = "1.0.140"
+solana-sdk = "=1.17.18"
+sqlx = {version = "0.6.2", features = [
+  "macros",
+  "runtime-tokio-rustls",
+  "postgres",
+  "uuid",
+  "offline",
+  "json",
+]}
+tokio = {version = "1.23.0", features = ["full"]}
+tracing = "0.1.35"
+tracing-subscriber = {version = "0.3.16", features = [
+  "json",
+  "env-filter",
+  "ansi",
+]}
