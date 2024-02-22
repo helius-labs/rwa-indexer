@@ -4,9 +4,9 @@ use crate::{
     programs::ProgramParseResult,
 };
 use asset_controller::state::{AssetControllerAccount, TrackerAccount, TransactionApprovalAccount};
+use borsh::BorshDeserialize;
 use plerkle_serialization::AccountInfo;
-use solana_sdk::{program_pack::Pack, pubkey::Pubkey, pubkeys};
-use spl_token::state::{Account as TokenAccount, Mint};
+use solana_sdk::{pubkey::Pubkey, pubkeys};
 
 pubkeys!(
     asset_controller_program_id,
@@ -60,33 +60,33 @@ impl ProgramParser for AssetControllerParser {
 
         let account_type = match account_data.len() {
             105 => {
-                let asset_controller =
-                    AssetControllerAccount::unpack(&account_data).map_err(|_| {
+                let account =
+                    AssetControllerAccount::try_from_slice(&account_data).map_err(|_| {
                         TransformerError::CustomDeserializationError(
                             "Asset Controller Account Unpack Failed".to_string(),
                         )
                     })?;
 
-                AssetControllerProgram::AssetControllerAccount(asset_controller)
+                AssetControllerProgram::AssetControllerAccount(account)
             }
             136 => {
-                let asset_controller =
-                    TransactionApprovalAccount::unpack(&account_data).map_err(|_| {
+                let account =
+                    TransactionApprovalAccount::try_from_slice(&account_data).map_err(|_| {
                         TransformerError::CustomDeserializationError(
                             "Transaction Approval Account Unpack Failed".to_string(),
                         )
                     })?;
 
-                AssetControllerProgram::AssetControllerAccount(asset_controller)
+                AssetControllerProgram::TransactionApprovalAccount(account)
             }
             240 => {
-                let asset_controller = TrackerAccount::unpack(&account_data).map_err(|_| {
+                let account = TrackerAccount::try_from_slice(&account_data).map_err(|_| {
                     TransformerError::CustomDeserializationError(
                         "Transaction Approval Account Unpack Failed".to_string(),
                     )
                 })?;
 
-                AssetControllerProgram::TrackerAccount(asset_controller)
+                AssetControllerProgram::TrackerAccount(account)
             }
             _ => {
                 return Err(TransformerError::InvalidDataLength);

@@ -1,6 +1,4 @@
-use crate::{
-    error::TransformerError, instruction::InstructionBundle, programs::ProgramParseResult,
-};
+use crate::{error::TransformerError, programs::ProgramParseResult};
 use plerkle_serialization::AccountInfo;
 use solana_sdk::pubkey::Pubkey;
 
@@ -44,10 +42,4 @@ pub trait ProgramParser: Sync + Send {
         &self,
         account_info: &AccountInfo,
     ) -> Result<Box<dyn ParseResult>, TransformerError>;
-    fn handle_instruction(
-        &self,
-        _bundle: &InstructionBundle,
-    ) -> Result<Box<dyn ParseResult>, TransformerError> {
-        Ok(Box::new(NotUsed::new()))
-    }
 }

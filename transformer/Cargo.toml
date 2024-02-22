@@ -17,6 +17,9 @@ flatbuffers = { workspace = true }
 borsh = { workspace = true }
 thiserror = { workspace = true }
 asset_controller = { workspace = true }
+data_registry = { workspace = true }
+identity_registry = { workspace = true }
+policy_engine = { workspace = true }
 solana-sdk = { workspace = true }
 spl-token-group-interface = { workspace = true }
 spl-pod = { workspace = true }
