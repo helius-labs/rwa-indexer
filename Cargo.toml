@@ -1,8 +1,10 @@
 [workspace]
 members = [
-    "migration",
-    "tools/acc_forwarder",
-    "streamer"
+  "common",
+  "migration",
+  "indexer",
+  "tools/acc_forwarder",
+  "transformer",
 ]
 
 [package]
@@ -18,27 +20,57 @@ resolver = "2"
 
 [workspace.dependencies]
 async-std = {version = "^1", features = ["attributes", "tokio1"]}
+async-stream = "0.3.5"
+async-trait = "0.1.57"
 anyhow = "1.0.79"
+base64 = "0.21.0"
 borsh = "0.10.3"
+bytemuck = { version = "1.14.0", features = ["derive"] }
+cadence = "0.29.0"
+cadence-macros = "0.29.0"
+chrono = "0.4.31"
+common = {path = "common"}
 bs58 = "0.4.0"
 bytes = "1.3.0"
+borsh-derive = {version = "0.9.3"}
 clap = {version = "4.1.4", features = ["derive", "cargo"]}
 env_logger = "0.10.0"
 enum-iterator = "1.2.0"
 enum-iterator-derive = "1.1.0"
 figment = {version = "0.10.9", features = ["env", "test", "json"]}
 futures = "0.3.24"
+futures-util = "0.3.27"
 flatbuffers = "23.1.21"
+hex = "0.4.3"
 http = "0.2.8"
+indexmap = "1.9.3"
 insta = {version = "1.34.0", features = ["json"]}
+jsonpath_lib = "0.3.0"
+mime_guess = "2.0.4"
 log = "0.4.17"
+num-derive = "0.3.3"
+num-traits = "0.2.15"
+rand = "0.8.5"
+redis = {version = "0.22.3", features = [
+  "aio",
+  "tokio-comp",
+  "streams",
+  "tokio-native-tls-comp",
+  "connection-manager",
+]}
+regex = "1.5.5"
+rust-crypto = "0.2.36"
+schemars = {version = "0.8.6", features = ["chrono"]}
+schemars_derive = "0.8.6"
 thiserror = "1.0.31"
 lazy_static = "1.4.0"
 light-poseidon = "0.2.0"
-plerkle_messenger = {path = "das-plugin/1.17.x/plerkle_messenger", features = [
+plerkle_messenger = {path = "../das-plugin/1.17.x/plerkle_messenger", features = [
   "redis",
 ]}
-plerkle_serialization = {path = "das-plugin/1.17.x/plerkle_serialization"}
+asset_controller = {path = "../rwa/programs/asset_controller"}
+plerkle_serialization = {path = "../das-plugin/1.17.x/plerkle_serialization"}
+transformer = {path = "transformer"}
 reqwest = {version = "0.11.13", features = ["json"]}
 sea-orm = {version = "0.10.6", features = [
   "macros",
@@ -50,11 +82,16 @@ sea-orm = {version = "0.10.6", features = [
 sea-query = {version = "0.28.1", features = ["postgres-array"]}
 serde_json = "1.0.82"
 serde = "1.0.140"
+spl-pod = { version = "0.1.0", features = ["serde-traits"] }
+spl-token-group-interface = "0.1.0"
 solana-program = "1.17.16"
 solana-account-decoder = "1.17.16"
 solana-client = "1.17.16"
-solana-sdk = "=1.17.16"
+solana-geyser-plugin-interface = {version = "1.17.16"}
+solana-sdk-macro = "1.17.16"
+solana-sdk = "1.17.20"
 solana-transaction-status = "1.17.16"
+solana-zk-token-sdk = "1.17.16"
 spl-token = {version = "4.0", features = ["no-entrypoint"]}
 spl-token-2022 = {version = "1.0", features = ["no-entrypoint"]}
 sqlx = {version = "0.6.2", features = [
@@ -65,10 +102,13 @@ sqlx = {version = "0.6.2", features = [
   "offline",
   "json",
 ]}
+stretto = {version = "0.7", features = ["async"]}
 tonic = "0.10.2"
 tonic-build = "0.10.2"
 tonic-health = "0.10.2"
 tokio = {version = "1.23.0", features = ["full"]}
+tokio-postgres = "0.7.7"
+tokio-retry = "0.3.0"
 tokio-stream = {version = "0.1.14", features = ["io-util"]}
 tracing = "0.1.35"
 tracing-subscriber = {version = "0.3.16", features = [
@@ -76,4 +116,5 @@ tracing-subscriber = {version = "0.3.16", features = [
   "env-filter",
   "ansi",
 ]}
-yellowstone-grpc-proto = { git = "https://github.com/helius-labs/yellowstone-grpc", tag = "v1.12.0+solana.1.17.16" }
+url = "2.3.1"
+uuid = "1.0.0"

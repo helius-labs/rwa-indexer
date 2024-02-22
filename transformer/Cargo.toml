@@ -1,0 +1,33 @@
+[package]
+name = "transformer"
+description = "RWA program parsers, for asset controller, data & identity registry"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+bytemuck = { workspace = true }
+plerkle_serialization = { workspace = true }
+spl-token = { workspace = true }
+spl-token-2022 = { workspace = true }
+async-trait = { workspace = true }
+bs58 = { workspace = true }
+lazy_static = { workspace = true }
+flatbuffers = { workspace = true }
+borsh = { workspace = true }
+thiserror = { workspace = true }
+asset_controller = { workspace = true }
+solana-sdk = { workspace = true }
+spl-token-group-interface = { workspace = true }
+spl-pod = { workspace = true }
+serde = { workspace = true }
+solana-zk-token-sdk = { workspace = true }
+log = { workspace = true }
+
+[dev-dependencies]
+rand = "0.8.5"
+spl-concurrent-merkle-tree = "0.2.0"
+solana-client = "1.17.16"
+solana-transaction-status = "1.17.16"
+solana-geyser-plugin-interface = "1.17.16"
+serde_json="1.0.89"
