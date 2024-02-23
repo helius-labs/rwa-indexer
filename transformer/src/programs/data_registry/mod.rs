@@ -4,7 +4,7 @@ use crate::{
     programs::ProgramParseResult,
 };
 use borsh::BorshDeserialize;
-use data_registry::state::DataAccount;
+use data_registry::{state::DataAccount, DataRegistry};
 use plerkle_serialization::AccountInfo;
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
@@ -17,6 +17,7 @@ pub struct DataRegistryParser;
 
 pub enum DataRegistryProgram {
     DataAccount(DataAccount),
+    DataRegistry(DataRegistry),
     EmptyAccount,
 }
 
@@ -57,6 +58,15 @@ impl ProgramParser for DataRegistryParser {
         };
 
         let account_type = match account_data.len() {
+            105 => {
+                let account = DataRegistry::try_from_slice(&account_data).map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Data Registry Unpack Failed".to_string(),
+                    )
+                })?;
+
+                DataRegistryProgram::DataRegistry(account)
+            }
             105 => {
                 let account = DataAccount::try_from_slice(&account_data).map_err(|_| {
                     TransformerError::CustomDeserializationError(

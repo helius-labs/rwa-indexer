@@ -16,7 +16,7 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(AssetController::AssetControllerVersion)
-                    .values(vec![AssetControllerVersion::V1, AssetControllerVersion::V2])
+                    .values(vec![AssetControllerVersion::V1])
                     .to_owned(),
             )
             .await?;

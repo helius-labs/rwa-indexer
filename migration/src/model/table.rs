@@ -3,8 +3,7 @@ use sea_orm_migration::prelude::*;
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum AssetControllerVersion {
-    V1,
-    V2,
+    V1 = 1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]

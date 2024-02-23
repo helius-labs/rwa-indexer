@@ -18,6 +18,7 @@ pub async fn handle_identity_registry_program_account<'a, 'b, 'c>(
     let key_bytes = key.0.to_vec();
     let spl_token_program = account_update.owner().unwrap().0.to_vec();
     match &parsing_result {
+        IdentityRegistryProgram::IdentityRegistry(ir) => Ok(()),
         IdentityRegistryProgram::IdentityAccount(ia) => Ok(()),
         _ => Err(IndexerError::NotImplemented),
     }?;

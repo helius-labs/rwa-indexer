@@ -4,7 +4,7 @@ use crate::{
     programs::ProgramParseResult,
 };
 use borsh::BorshDeserialize;
-use identity_registry::state::IdentityAccount;
+use identity_registry::{state::IdentityAccount, IdentityRegistry};
 use plerkle_serialization::AccountInfo;
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
@@ -16,6 +16,7 @@ pubkeys!(
 pub struct IdentityRegistryParser;
 
 pub enum IdentityRegistryProgram {
+    IdentityRegistry(IdentityRegistry),
     IdentityAccount(IdentityAccount),
     EmptyAccount,
 }
@@ -57,6 +58,15 @@ impl ProgramParser for IdentityRegistryParser {
         };
 
         let account_type = match account_data.len() {
+            105 => {
+                let registry = IdentityRegistry::try_from_slice(&account_data).map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Identity Registry Unpack Failed".to_string(),
+                    )
+                })?;
+
+                IdentityRegistryProgram::IdentityRegistry(registry)
+            }
             83 => {
                 let account = IdentityAccount::try_from_slice(&account_data).map_err(|_| {
                     TransformerError::CustomDeserializationError(

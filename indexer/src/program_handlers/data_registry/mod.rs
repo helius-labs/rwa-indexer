@@ -20,6 +20,7 @@ pub async fn handle_data_registry_program_account<'a, 'b, 'c>(
     let key_bytes = key.0.to_vec();
     let spl_token_program = account_update.owner().unwrap().0.to_vec();
     match &parsing_result {
+        DataRegistryProgram::DataRegistry(dr) => Ok(()),
         DataRegistryProgram::DataAccount(da) => Ok(()),
         _ => Err(IndexerError::NotImplemented),
     }?;
