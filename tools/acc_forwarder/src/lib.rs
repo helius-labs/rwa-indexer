@@ -1,7 +1,7 @@
 use {
     anyhow::Context,
     futures::stream::{BoxStream, StreamExt},
-    log::{debug, error, info},
+    log::{error, info},
     plerkle_messenger::ACCOUNT_STREAM,
     plerkle_serialization::{
         serializer::serialize_account, solana_geyser_plugin_interface_shims::ReplicaAccountInfoV2,
@@ -10,23 +10,19 @@ use {
     solana_account_decoder::{UiAccount, UiAccountEncoding},
     solana_client::client_error::Result as RpcClientResult,
     solana_client::{
-        nonblocking::rpc_client::RpcClient,
-        rpc_config::RpcAccountInfoConfig,
-        rpc_request::RpcRequest,
-        rpc_response::{Response as RpcResponse, RpcTokenAccountBalance},
+        nonblocking::rpc_client::RpcClient, rpc_config::RpcAccountInfoConfig,
+        rpc_request::RpcRequest, rpc_response::Response as RpcResponse,
     },
     solana_program::{pubkey, pubkey::Pubkey},
     solana_sdk::{
         account::Account,
-        borsh0_10,
         commitment_config::{CommitmentConfig, CommitmentLevel},
     },
-    std::{fmt, io::Result as IoResult, str::FromStr, sync::Arc},
+    std::{fmt, io::Result as IoResult, sync::Arc},
     tokio::sync::Mutex,
     tokio::{
         fs::File,
         io::{stdin, AsyncBufReadExt, BufReader},
-        sync::mpsc,
         time::{sleep, Duration},
     },
     tokio_stream::wrappers::LinesStream,

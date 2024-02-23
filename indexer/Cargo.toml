@@ -1,0 +1,59 @@
+[package]
+edition = "2021"
+name = "indexer"
+publish = false
+version = "0.1.0"
+
+[dependencies]
+async-trait = { workspace = true }
+async-stream = { workspace = true }
+base64 = { workspace = true }
+transformer = { workspace = true }
+borsh = { workspace = true }
+bs58 = { workspace = true }
+cadence = { workspace = true }
+cadence-macros = { workspace = true }
+chrono = { workspace = true }
+common = { workspace = true }
+env_logger = { workspace = true }
+figment = { workspace = true }
+flatbuffers = { workspace = true }
+futures = { workspace = true }
+futures-util = { workspace = true }
+hex = { workspace = true }
+lazy_static = { workspace = true }
+log = { workspace = true }
+num-traits = { workspace = true }
+plerkle_messenger = { workspace = true }
+plerkle_serialization = { workspace = true }
+rand = { workspace = true }
+redis = { workspace = true }
+regex = { workspace = true }
+reqwest = { workspace = true }
+rust-crypto = { workspace = true }
+sea-orm = { workspace = true }
+sea-query = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+solana-account-decoder = { workspace = true }
+solana-client = { workspace = true }
+solana-geyser-plugin-interface = { workspace = true }
+solana-sdk = { workspace = true }
+solana-sdk-macro = { workspace = true }
+solana-transaction-status = { workspace = true }
+spl-token = { workspace = true }
+spl-token-2022 = { workspace = true }
+sqlx = { workspace = true }
+stretto = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-postgres = { workspace = true }
+tokio-stream = { workspace = true }
+tokio-retry = { workspace = true }
+tracing-subscriber = { workspace = true }
+url = { workspace = true }
+uuid = { workspace = true }
+
+[dependencies.num-integer]
+default-features = false
+version = "0.1.44"
