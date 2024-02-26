@@ -1,8 +1,8 @@
 [workspace]
 members = [
-  "common",
   "migration",
   "indexer",
+  "rwa_types",
   "tools/acc_forwarder",
   "transformer",
 ]
