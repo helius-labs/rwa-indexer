@@ -2,15 +2,10 @@ use plerkle_messenger::MessengerError;
 use plerkle_serialization::error::PlerkleSerializationError;
 use sea_orm::{DbErr, TransactionError};
 use thiserror::Error;
-use tokio::sync::mpsc::error::SendError;
 use transformer::error::TransformerError;
 
 #[derive(Error, Debug, PartialEq, Eq)]
 pub enum IndexerError {
-    #[error("ChangeLog Event Malformed")]
-    ChangeLogEventMalformed,
-    #[error("Compressed Asset Event Malformed")]
-    CompressedAssetEventMalformed,
     #[error("Network Error: {0}")]
     BatchInitNetworkingError(String),
     #[error("Error writing batch files")]
@@ -25,10 +20,6 @@ pub enum IndexerError {
     DeserializationError(String),
     #[error("Missing or invalid configuration: ({msg})")]
     ConfigurationError { msg: String },
-    #[error("Error getting RPC data: {0}")]
-    RpcGetDataError(String),
-    #[error("RPC returned data in unsupported format: {0}")]
-    RpcDataUnsupportedFormat(String),
     #[error("Data serializaton error: {0}")]
     SerializatonError(String),
     #[error("Messenger error; {0}")]
@@ -39,8 +30,6 @@ pub enum IndexerError {
     DatabaseError(String),
     #[error("Cache Storage Write Error: {0}")]
     CacheStorageWriteError(String),
-    #[error("HttpError {status_code}")]
-    HttpError { status_code: String, uri: String },
     #[error("AssetIndex Error {0}")]
     AssetIndexError(String),
 }

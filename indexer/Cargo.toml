@@ -31,6 +31,7 @@ redis = { workspace = true }
 regex = { workspace = true }
 reqwest = { workspace = true }
 rust-crypto = { workspace = true }
+rwa_types = { workspace = true }
 sea-orm = { workspace = true }
 sea-query = { workspace = true }
 serde = { workspace = true }
