@@ -164,7 +164,7 @@ impl MigrationTrait for Migration {
             .get_connection()
             .execute(Statement::from_string(
                 DatabaseBackend::Postgres,
-                "ALTER TABLE tracker_account ADD COLUMN transfer_amounts uint64_t[] not null;"
+                "ALTER TABLE tracker_account ADD COLUMN transfer_amounts TEXT NOT NULL DEFAULT '[]';"
                     .to_string(),
             ))
             .await?;
@@ -173,7 +173,7 @@ impl MigrationTrait for Migration {
             .get_connection()
             .execute(Statement::from_string(
                 DatabaseBackend::Postgres,
-                "ALTER TABLE tracker_account ADD COLUMN transfer_timestamps bigint[] not null;"
+                "ALTER TABLE tracker_account ADD COLUMN transfer_timestamps TEXT NOT NULL DEFAULT '[]';"
                     .to_string(),
             ))
             .await?;

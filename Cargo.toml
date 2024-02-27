@@ -60,6 +60,10 @@ redis = {version = "0.22.3", features = [
 ]}
 regex = "1.5.5"
 rust-crypto = "0.2.36"
+rwa_types = {path = "rwa_types", features = [
+  "json_types",
+  "sql_types",
+]}
 schemars = {version = "0.8.6", features = ["chrono"]}
 schemars_derive = "0.8.6"
 thiserror = "1.0.31"

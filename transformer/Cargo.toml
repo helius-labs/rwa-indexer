@@ -8,8 +8,6 @@ publish = false
 [dependencies]
 bytemuck = { workspace = true }
 plerkle_serialization = { workspace = true }
-spl-token = { workspace = true }
-spl-token-2022 = { workspace = true }
 async-trait = { workspace = true }
 bs58 = { workspace = true }
 lazy_static = { workspace = true }
