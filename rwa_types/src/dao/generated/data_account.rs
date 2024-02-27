@@ -19,7 +19,7 @@ pub struct Model {
     pub name: String,
     pub uri: String,
     pub data_registry: Vec<u8>,
-    pub r#type: DataAccountType,
+    pub _type: DataAccountType,
     pub slot_updated: i64,
     pub created_at: DateTime,
     pub last_updated_at: DateTime,
