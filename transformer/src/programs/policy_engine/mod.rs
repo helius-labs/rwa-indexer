@@ -65,34 +65,42 @@ impl ProgramParser for PolicyEngineParser {
 
         let account_type = match account_data.len() {
             440 => {
-                let account = PolicyEngine::try_from_slice(&account_data).map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Policy Engine Account Unpack Failed".to_string(),
-                    )
-                })?;
+                let account_info_without_discriminator = &account_data[8..];
+                let account = PolicyEngine::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
+                        TransformerError::CustomDeserializationError(
+                            "Policy Engine Account Unpack Failed".to_string(),
+                        )
+                    })?;
 
                 PolicyEngineProgram::PolicyEngine(Box::new(account))
             }
             20 => {
-                let account = IdentityApproval::try_from_slice(&account_data).map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Identity Approval Account Unpack Failed".to_string(),
-                    )
-                })?;
+                let account_info_without_discriminator = &account_data[8..];
+                let account = IdentityApproval::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
+                        TransformerError::CustomDeserializationError(
+                            "Identity Approval Account Unpack Failed".to_string(),
+                        )
+                    })?;
                 PolicyEngineProgram::IdentityApproval(account)
             }
             28 => {
+                let account_info_without_discriminator = &account_data[8..];
                 let account =
-                    TransactionAmountLimit::try_from_slice(&account_data).map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Transaction Amount Limit Account Unpack Failed".to_string(),
-                        )
-                    })?;
+                    TransactionAmountLimit::try_from_slice(account_info_without_discriminator)
+                        .map_err(|_| {
+                            TransformerError::CustomDeserializationError(
+                                "Transaction Amount Limit Account Unpack Failed".to_string(),
+                            )
+                        })?;
                 PolicyEngineProgram::TransactionAmountLimit(account)
             }
             36 => {
+                let account_info_without_discriminator = &account_data[8..];
                 let account =
-                    TransactionAmountVelocity::try_from_slice(&account_data).map_err(|_| {
+                    TransactionAmountVelocity::try_from_slice(account_info_without_discriminator)
+                        .map_err(|_| {
                         TransformerError::CustomDeserializationError(
                             "Transaction Amount Velocity Account Unpack Failed".to_string(),
                         )
@@ -101,12 +109,14 @@ impl ProgramParser for PolicyEngineParser {
                 PolicyEngineProgram::TransactionAmountVelocity(account)
             }
             36 => {
+                let account_info_without_discriminator = &account_data[8..];
                 let account =
-                    TransactionCountVelocity::try_from_slice(&account_data).map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Transaction Count Velocity Account Unpack Failed".to_string(),
-                        )
-                    })?;
+                    TransactionCountVelocity::try_from_slice(account_info_without_discriminator)
+                        .map_err(|_| {
+                            TransformerError::CustomDeserializationError(
+                                "Transaction Count Velocity Account Unpack Failed".to_string(),
+                            )
+                        })?;
 
                 PolicyEngineProgram::TransactionCountVelocity(account)
             }

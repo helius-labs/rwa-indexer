@@ -8,6 +8,8 @@ use borsh::BorshDeserialize;
 use plerkle_serialization::AccountInfo;
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
+use super::get_discriminator;
+
 pubkeys!(
     asset_controller_program_id,
     "DtrBDukceZpUnWmeNzqtoBQPdXW8p9xmWYG1z7qMt8qG"
@@ -48,6 +50,7 @@ impl ProgramParser for AssetControllerParser {
     fn handles_instructions(&self) -> bool {
         false
     }
+
     fn handle_account(
         &self,
         account_info: &AccountInfo,
@@ -58,33 +61,74 @@ impl ProgramParser for AssetControllerParser {
             return Ok(Box::new(AssetControllerProgram::EmptyAccount));
         };
 
+        // let asset_controller_discriminator = get_discriminator("AssetControllerAccount");
+        // let transaction_approval_discriminator = get_discriminator("TransactionApprovalAccount");
+        // let tracker_account_discriminator = get_discriminator("TrackerAccount");
+
+        // let account_type_discriminator = &account_data[..8];
+        // println!("account type des: {:?}", account_type_discriminator);
+
+        // let account = if account_type_discriminator == asset_controller_discriminator {
+        //     AssetControllerProgram::AssetControllerAccount(
+        //         AssetControllerAccount::try_from_slice(&account_data[8..]).map_err(|_| {
+        //             TransformerError::CustomDeserializationError(
+        //                 "Failed to deserialize AssetControllerAccount".to_string(),
+        //             )
+        //         })?,
+        //     )
+        // } else if account_type_discriminator == transaction_approval_discriminator {
+        //     AssetControllerProgram::TransactionApprovalAccount(
+        //         TransactionApprovalAccount::try_from_slice(&account_data[8..]).map_err(|_| {
+        //             TransformerError::CustomDeserializationError(
+        //                 "Failed to deserialize TransactionApprovalAccount".to_string(),
+        //             )
+        //         })?,
+        //     )
+        // } else if account_type_discriminator == tracker_account_discriminator {
+        //     AssetControllerProgram::TrackerAccount(
+        //         TrackerAccount::try_from_slice(&account_data[8..]).map_err(|_| {
+        //             TransformerError::CustomDeserializationError(
+        //                 "Failed to deserialize TrackerAccount".to_string(),
+        //             )
+        //         })?,
+        //     )
+        // } else {
+        //     return Err(TransformerError::InvalidDataLength);
+        // };
+
         let account_type = match account_data.len() {
             105 => {
+                let account_info_without_discriminator = &account_data[8..];
                 let account =
-                    AssetControllerAccount::try_from_slice(&account_data).map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Asset Controller Account Unpack Failed".to_string(),
-                        )
-                    })?;
+                    AssetControllerAccount::try_from_slice(account_info_without_discriminator)
+                        .map_err(|_| {
+                            TransformerError::CustomDeserializationError(
+                                "Asset Controller Account Unpack Failed".to_string(),
+                            )
+                        })?;
 
                 AssetControllerProgram::AssetControllerAccount(account)
             }
             136 => {
+                let account_info_without_discriminator = &account_data[8..];
                 let account =
-                    TransactionApprovalAccount::try_from_slice(&account_data).map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Transaction Approval Account Unpack Failed".to_string(),
-                        )
-                    })?;
+                    TransactionApprovalAccount::try_from_slice(account_info_without_discriminator)
+                        .map_err(|_| {
+                            TransformerError::CustomDeserializationError(
+                                "Transaction Approval Account Unpack Failed".to_string(),
+                            )
+                        })?;
 
                 AssetControllerProgram::TransactionApprovalAccount(account)
             }
             240 => {
-                let account = TrackerAccount::try_from_slice(&account_data).map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Transaction Approval Account Unpack Failed".to_string(),
-                    )
-                })?;
+                let account_info_without_discriminator = &account_data[8..];
+                let account = TrackerAccount::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
+                        TransformerError::CustomDeserializationError(
+                            "Transaction Approval Account Unpack Failed".to_string(),
+                        )
+                    })?;
 
                 AssetControllerProgram::TrackerAccount(account)
             }

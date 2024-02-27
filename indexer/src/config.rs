@@ -18,10 +18,8 @@ pub struct IndexerConfig {
     pub rpc_config: RpcConfig,
     pub metrics_port: Option<u16>,
     pub metrics_host: Option<String>,
-    pub backfiller: Option<bool>,
     pub max_postgres_connections: Option<u32>,
     pub account_stream_worker_count: Option<u32>,
-    pub transaction_stream_worker_count: Option<u32>,
     pub code_version: Option<String>,
     pub pod_type: Option<PodType>,
 }
@@ -95,15 +93,13 @@ pub fn rand_string() -> String {
 }
 
 pub fn setup_config() -> IndexerConfig {
-    let mut config: IndexerConfig = load_config_using_env_prefix("INGESTER_");
+    let mut config: IndexerConfig = load_config_using_env_prefix("INDEXER_");
     config.code_version = Some(CODE_VERSION.to_string());
     config
 }
 
 pub fn init_logger() {
-    let env_filter = env::var("RUST_LOG")
-        .or::<Result<String, ()>>(Ok("info".to_string()))
-        .unwrap();
+    let env_filter = env::var("RUST_LOG").unwrap_or("info".to_string());
     let t = tracing_subscriber::fmt().with_env_filter(env_filter);
     t.event_format(fmt::format::json()).init();
 }

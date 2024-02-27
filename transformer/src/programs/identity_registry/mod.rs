@@ -59,16 +59,20 @@ impl ProgramParser for IdentityRegistryParser {
 
         let account_type = match account_data.len() {
             105 => {
-                let registry = IdentityRegistry::try_from_slice(&account_data).map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Identity Registry Unpack Failed".to_string(),
-                    )
-                })?;
+                let account_info_without_discriminator = &account_data[8..];
+                let registry = IdentityRegistry::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
+                        TransformerError::CustomDeserializationError(
+                            "Identity Registry Unpack Failed".to_string(),
+                        )
+                    })?;
 
                 IdentityRegistryProgram::IdentityRegistry(registry)
             }
             83 => {
-                let account = IdentityAccount::try_from_slice(&account_data).map_err(|_| {
+                let account_info_without_discriminator = &account_data[8..];
+                let account = IdentityAccount::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
                     TransformerError::CustomDeserializationError(
                         "Identity Account Unpack Failed".to_string(),
                     )

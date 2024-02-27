@@ -59,20 +59,24 @@ impl ProgramParser for DataRegistryParser {
 
         let account_type = match account_data.len() {
             105 => {
-                let account = DataRegistry::try_from_slice(&account_data).map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Data Registry Unpack Failed".to_string(),
-                    )
-                })?;
+                let account_info_without_discriminator = &account_data[8..];
+                let account = DataRegistry::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
+                        TransformerError::CustomDeserializationError(
+                            "Data Registry Unpack Failed".to_string(),
+                        )
+                    })?;
 
                 DataRegistryProgram::DataRegistry(account)
             }
             105 => {
-                let account = DataAccount::try_from_slice(&account_data).map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Data Account Unpack Failed".to_string(),
-                    )
-                })?;
+                let account_info_without_discriminator = &account_data[8..];
+                let account = DataAccount::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
+                        TransformerError::CustomDeserializationError(
+                            "Data Account Unpack Failed".to_string(),
+                        )
+                    })?;
 
                 DataRegistryProgram::DataAccount(account)
             }

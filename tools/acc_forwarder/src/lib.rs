@@ -37,7 +37,7 @@ pub const DATA_REGISTRY_PROGRAM_ID: Pubkey =
 pub const IDENTIFIER_REGISTRY_PROGRAM_ID: Pubkey =
     pubkey!("qDnvwpjBYjH1vs1N1CSdbVkEkePp2acL7TphAYZDeoV");
 
-pub const POLICY_REGISTRY_PROGRAM_ID: Pubkey =
+pub const POLICY_ENGINE_PROGRAM_ID: Pubkey =
     pubkey!("6FcM5R2KcdUGcdLunzLm3XLRFr7FiF6Hdz3EWni8YPa2");
 
 pub fn find_asset_controller_pda(mint: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
@@ -45,6 +45,20 @@ pub fn find_asset_controller_pda(mint: &Pubkey) -> (solana_program::pubkey::Pubk
         &[mint.as_ref()],
         &ASSET_CONTROLLER_PROGRAM_ID,
     )
+}
+
+pub fn find_tracker_account_pda(mint: &Pubkey, owner: &Pubkey) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &[mint.as_ref(), owner.as_ref()],
+        &ASSET_CONTROLLER_PROGRAM_ID,
+    )
+}
+
+pub fn find_transaction_approval_account_pda(mint: &Pubkey) -> (Pubkey, u8) {
+    let seed_str = "transaction-approval-account";
+    let seed = seed_str.as_bytes();
+
+    Pubkey::find_program_address(&[seed, mint.as_ref()], &ASSET_CONTROLLER_PROGRAM_ID)
 }
 
 pub fn find_data_registry_pda(data_type: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
@@ -61,10 +75,46 @@ pub fn find_identifier_registry_pda(identifier: &Pubkey) -> (solana_program::pub
     )
 }
 
-pub fn find_policy_registry_pda(policy: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
+pub fn find_identity_account_pda(asset_mint: &Pubkey, owner: &Pubkey) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &[asset_mint.as_ref(), owner.as_ref()],
+        &IDENTIFIER_REGISTRY_PROGRAM_ID,
+    )
+}
+
+pub fn find_policy_engine_pda(policy: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
     solana_program::pubkey::Pubkey::find_program_address(
         &[policy.as_ref()],
-        &POLICY_REGISTRY_PROGRAM_ID,
+        &POLICY_ENGINE_PROGRAM_ID,
+    )
+}
+
+pub fn find_identity_approval_pda(policy_engine_seed: &[u8]) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &[b"identity_approval", policy_engine_seed],
+        &POLICY_ENGINE_PROGRAM_ID,
+    )
+}
+
+pub fn find_transaction_amount_limit_pda(policy_engine_seed: &[u8]) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &[b"transaction_amount_limit", policy_engine_seed],
+        &POLICY_ENGINE_PROGRAM_ID,
+    )
+}
+
+pub fn find_transaction_amount_velocity_pda(policy_engine_seed: &[u8]) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &[b"transaction_amount_velocity", policy_engine_seed],
+        &POLICY_ENGINE_PROGRAM_ID,
+    )
+}
+
+// TransactionCountVelocity
+pub fn find_transaction_count_velocity_pda(policy_engine_seed: &[u8]) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &[b"transaction_count_velocity", policy_engine_seed],
+        &POLICY_ENGINE_PROGRAM_ID,
     )
 }
 

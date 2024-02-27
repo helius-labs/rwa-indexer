@@ -47,7 +47,7 @@ pub async fn handle_asset_controller_program_account<'a, 'b, 'c>(
                 .build(DbBackend::Postgres);
 
             query.sql = format!(
-                "{} WHERE excluded.slot_updated >= asset_controller.slot_updated OR asset.slot_updated IS NULL",
+                "{} WHERE excluded.slot_updated >= asset_controller.slot_updated OR asset_controller.slot_updated IS NULL",
                 query.sql);
 
             let txn = db.begin().await?;

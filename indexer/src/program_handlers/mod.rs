@@ -7,7 +7,11 @@ use sqlx::PgPool;
 use std::collections::{HashMap, HashSet};
 use transformer::{
     program_handler::ProgramParser,
-    programs::{asset_controller::AssetControllerParser, ProgramParseResult},
+    programs::{
+        asset_controller::AssetControllerParser, data_registry::DataRegistryParser,
+        identity_registry::IdentityRegistryParser, policy_engine::PolicyEngineParser,
+        ProgramParseResult,
+    },
 };
 
 use crate::program_handlers::asset_controller::handle_asset_controller_program_account;
@@ -35,7 +39,13 @@ impl ProgramHandler {
     pub fn new(pool: PgPool, config: IndexerConfig) -> Self {
         let mut matchers: HashMap<Pubkey, Box<dyn ProgramParser>> = HashMap::with_capacity(1);
         let asset_controller = AssetControllerParser {};
+        let data_registry = DataRegistryParser {};
+        let identity_registry = IdentityRegistryParser {};
+        let policy_engine = PolicyEngineParser {};
         matchers.insert(asset_controller.key(), Box::new(asset_controller));
+        matchers.insert(data_registry.key(), Box::new(data_registry));
+        matchers.insert(identity_registry.key(), Box::new(identity_registry));
+        matchers.insert(policy_engine.key(), Box::new(policy_engine));
         let hs = matchers.iter().fold(HashSet::new(), |mut acc, (k, _)| {
             acc.insert(*k);
             acc

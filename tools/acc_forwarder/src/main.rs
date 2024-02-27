@@ -131,12 +131,20 @@ async fn main() -> anyhow::Result<()> {
                 Pubkey::from_str(&mint).with_context(|| format!("failed to parse mint {mint}"))?;
 
             let asset_controller_pda = acc_forwarder::find_asset_controller_pda(&mint).0;
+            let transaction_approval_pda =
+                acc_forwarder::find_transaction_approval_account_pda(&mint).0;
             let data_pda = acc_forwarder::find_data_registry_pda(&mint).0;
             let identifier_pda = acc_forwarder::find_identifier_registry_pda(&mint).0;
-            let policy_pda = acc_forwarder::find_policy_registry_pda(&mint).0;
+            let policy_pda = acc_forwarder::find_policy_engine_pda(&mint).0;
 
             fetch_and_send_account(mint, &client, &messenger, false).await?;
-            for pubkey in &[asset_controller_pda, data_pda, identifier_pda, policy_pda] {
+            for pubkey in &[
+                asset_controller_pda,
+                transaction_approval_pda,
+                data_pda,
+                identifier_pda,
+                policy_pda,
+            ] {
                 fetch_and_send_account(*pubkey, &client, &messenger, true).await?;
             }
         }
