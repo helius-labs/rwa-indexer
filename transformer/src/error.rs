@@ -12,8 +12,6 @@ pub enum TransformerError {
     DeserializationError,
     #[error("Missing Bubblegum event data")]
     MissingBubblegumEventData,
-    #[error("Data length is invalid.")]
-    InvalidDataLength,
     #[error("Unknown anchor account discriminator.")]
     UnknownAccountDiscriminator,
     #[error("Account type is not valid")]

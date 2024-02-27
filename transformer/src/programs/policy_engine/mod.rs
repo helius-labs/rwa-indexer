@@ -11,6 +11,8 @@ use policy_engine::state::{
 };
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
+use super::get_discriminator;
+
 pubkeys!(
     policy_engine_program_id,
     "6FcM5R2KcdUGcdLunzLm3XLRFr7FiF6Hdz3EWni8YPa2"
@@ -63,68 +65,64 @@ impl ProgramParser for PolicyEngineParser {
             return Ok(Box::new(PolicyEngineProgram::EmptyAccount));
         };
 
-        let account_type = match account_data.len() {
-            440 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let account = PolicyEngine::try_from_slice(account_info_without_discriminator)
-                    .map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Policy Engine Account Unpack Failed".to_string(),
-                        )
-                    })?;
+        let policy_engine_descriminator = get_discriminator("PolicyEngine");
+        let identity_approval_descriminator = get_discriminator("IdentityApproval");
+        let transaction_amount_limit_descriminator = get_discriminator("TransactionAmountLimit");
+        let transaction_amount_velocity_descriminator =
+            get_discriminator("TransactionAmountVelocity");
+        let transaction_count_velocity_descriminator =
+            get_discriminator("TransactionCountVelocity");
+        let account_type_discriminator = &account_data[..8];
+        let account_info_without_discriminator = &account_data[8..];
 
-                PolicyEngineProgram::PolicyEngine(Box::new(account))
-            }
-            20 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let account = IdentityApproval::try_from_slice(account_info_without_discriminator)
+        let account = if account_type_discriminator == policy_engine_descriminator {
+            let account = PolicyEngine::try_from_slice(account_info_without_discriminator)
+                .map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Policy Engine Account Unpack Failed".to_string(),
+                    )
+                })?;
+            PolicyEngineProgram::PolicyEngine(Box::new(account))
+        } else if account_type_discriminator == identity_approval_descriminator {
+            let account = IdentityApproval::try_from_slice(account_info_without_discriminator)
+                .map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Identity Approval Account Unpack Failed".to_string(),
+                    )
+                })?;
+            PolicyEngineProgram::IdentityApproval(account)
+        } else if account_type_discriminator == transaction_amount_limit_descriminator {
+            let account =
+                TransactionAmountLimit::try_from_slice(account_info_without_discriminator)
                     .map_err(|_| {
                         TransformerError::CustomDeserializationError(
-                            "Identity Approval Account Unpack Failed".to_string(),
+                            "Transaction Amount Limit Account Unpack Failed".to_string(),
                         )
                     })?;
-                PolicyEngineProgram::IdentityApproval(account)
-            }
-            28 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let account =
-                    TransactionAmountLimit::try_from_slice(account_info_without_discriminator)
-                        .map_err(|_| {
-                            TransformerError::CustomDeserializationError(
-                                "Transaction Amount Limit Account Unpack Failed".to_string(),
-                            )
-                        })?;
-                PolicyEngineProgram::TransactionAmountLimit(account)
-            }
-            36 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let account =
-                    TransactionAmountVelocity::try_from_slice(account_info_without_discriminator)
-                        .map_err(|_| {
+            PolicyEngineProgram::TransactionAmountLimit(account)
+        } else if account_type_discriminator == transaction_amount_velocity_descriminator {
+            let account =
+                TransactionAmountVelocity::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
                         TransformerError::CustomDeserializationError(
                             "Transaction Amount Velocity Account Unpack Failed".to_string(),
                         )
                     })?;
-
-                PolicyEngineProgram::TransactionAmountVelocity(account)
-            }
-            36 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let account =
-                    TransactionCountVelocity::try_from_slice(account_info_without_discriminator)
-                        .map_err(|_| {
-                            TransformerError::CustomDeserializationError(
-                                "Transaction Count Velocity Account Unpack Failed".to_string(),
-                            )
-                        })?;
-
-                PolicyEngineProgram::TransactionCountVelocity(account)
-            }
-            _ => {
-                return Err(TransformerError::InvalidDataLength);
-            }
+            PolicyEngineProgram::TransactionAmountVelocity(account)
+        } else if account_type_discriminator == transaction_count_velocity_descriminator {
+            let account_info_without_discriminator = &account_data[8..];
+            let account =
+                TransactionCountVelocity::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
+                        TransformerError::CustomDeserializationError(
+                            "Transaction Count Velocity Account Unpack Failed".to_string(),
+                        )
+                    })?;
+            PolicyEngineProgram::TransactionCountVelocity(account)
+        } else {
+            return Err(TransformerError::UnknownAccountDiscriminator);
         };
 
-        Ok(Box::new(account_type))
+        Ok(Box::new(account))
     }
 }

@@ -8,6 +8,8 @@ use data_registry::{state::DataAccount, DataRegistry};
 use plerkle_serialization::AccountInfo;
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
+use super::get_discriminator;
+
 pubkeys!(
     data_registry_program_id,
     "8WRaNVNMDqdwADbKYj7fBd47i2e5SFMSEs8TrA2Vd5io"
@@ -57,34 +59,32 @@ impl ProgramParser for DataRegistryParser {
             return Ok(Box::new(DataRegistryProgram::EmptyAccount));
         };
 
-        let account_type = match account_data.len() {
-            105 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let account = DataRegistry::try_from_slice(account_info_without_discriminator)
-                    .map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Data Registry Unpack Failed".to_string(),
-                        )
-                    })?;
+        let data_registry_discriminator = get_discriminator("DataRegistry");
+        let data_account_discriminator = get_discriminator("DataAccount");
+        let account_type_discriminator = &account_data[..8];
+        let account_info_without_discriminator = &account_data[8..];
 
-                DataRegistryProgram::DataRegistry(account)
-            }
-            105 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let account = DataAccount::try_from_slice(account_info_without_discriminator)
-                    .map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Data Account Unpack Failed".to_string(),
-                        )
-                    })?;
+        let account = if account_type_discriminator == data_registry_discriminator {
+            let account = DataRegistry::try_from_slice(account_info_without_discriminator)
+                .map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Data Registry Unpack Failed".to_string(),
+                    )
+                })?;
 
-                DataRegistryProgram::DataAccount(account)
-            }
-            _ => {
-                return Err(TransformerError::InvalidDataLength);
-            }
+            DataRegistryProgram::DataRegistry(account)
+        } else if account_type_discriminator == data_account_discriminator {
+            let account =
+                DataAccount::try_from_slice(account_info_without_discriminator).map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Data Account Unpack Failed".to_string(),
+                    )
+                })?;
+
+            DataRegistryProgram::DataAccount(account)
+        } else {
+            return Err(TransformerError::UnknownAccountDiscriminator);
         };
-
-        Ok(Box::new(account_type))
+        Ok(Box::new(account))
     }
 }

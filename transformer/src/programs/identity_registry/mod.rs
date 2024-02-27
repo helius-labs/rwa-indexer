@@ -8,6 +8,8 @@ use identity_registry::{state::IdentityAccount, IdentityRegistry};
 use plerkle_serialization::AccountInfo;
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
+use super::get_discriminator;
+
 pubkeys!(
     identity_registry_program_id,
     "qDnvwpjBYjH1vs1N1CSdbVkEkePp2acL7TphAYZDeoV"
@@ -57,34 +59,32 @@ impl ProgramParser for IdentityRegistryParser {
             return Ok(Box::new(IdentityRegistryProgram::EmptyAccount));
         };
 
-        let account_type = match account_data.len() {
-            105 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let registry = IdentityRegistry::try_from_slice(account_info_without_discriminator)
-                    .map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Identity Registry Unpack Failed".to_string(),
-                        )
-                    })?;
+        let identity_registry_descriminator = get_discriminator("IdentityRegistry");
+        let identity_account_descriminator = get_discriminator("IdentityAccount");
+        let account_type_discriminator = &account_data[..8];
+        let account_info_without_discriminator = &account_data[8..];
 
-                IdentityRegistryProgram::IdentityRegistry(registry)
-            }
-            83 => {
-                let account_info_without_discriminator = &account_data[8..];
-                let account = IdentityAccount::try_from_slice(account_info_without_discriminator)
-                    .map_err(|_| {
+        let account = if account_type_discriminator == identity_registry_descriminator {
+            let account = IdentityRegistry::try_from_slice(account_info_without_discriminator)
+                .map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Identity Registry Unpack Failed".to_string(),
+                    )
+                })?;
+
+            IdentityRegistryProgram::IdentityRegistry(account)
+        } else if account_type_discriminator == identity_account_descriminator {
+            let account = IdentityAccount::try_from_slice(account_info_without_discriminator)
+                .map_err(|_| {
                     TransformerError::CustomDeserializationError(
                         "Identity Account Unpack Failed".to_string(),
                     )
                 })?;
 
-                IdentityRegistryProgram::IdentityAccount(account)
-            }
-            _ => {
-                return Err(TransformerError::InvalidDataLength);
-            }
+            IdentityRegistryProgram::IdentityAccount(account)
+        } else {
+            return Err(TransformerError::UnknownAccountDiscriminator);
         };
-
-        Ok(Box::new(account_type))
+        Ok(Box::new(account))
     }
 }
