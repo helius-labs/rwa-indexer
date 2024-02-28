@@ -69,6 +69,7 @@ pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
                 identity_levels: Set(Some(
                     json!({ "identity_levels": ia.identity_filter.identity_levels}),
                 )),
+                policy_engine: Set(ia.policy_engine.to_bytes().to_vec()),
                 version: Set(IdentityApprovalVersion::from(ia.version)),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
@@ -104,6 +105,7 @@ pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
                 identity_levels: Set(Some(
                     json!({ "identity_levels": ta.identity_filter.identity_levels}),
                 )),
+                policy_engine: Set(ta.policy_engine.to_bytes().to_vec()),
                 version: Set(TransactionAmountLimitVersion::from(ta.version)),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
@@ -139,6 +141,7 @@ pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
                 identity_levels: Set(Some(
                     json!({ "identity_levels": tv.identity_filter.identity_levels }),
                 )),
+                policy_engine: Set(tv.policy_engine.to_bytes().to_vec()),
                 version: Set(TransactionAmountVelocityVersion::from(tv.version)),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
@@ -174,6 +177,7 @@ pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
                 identity_levels: Set(Some(
                     json!({ "identity_levels": tc.identity_filter.identity_levels}),
                 )),
+                policy_engine: Set(tc.policy_engine.to_bytes().to_vec()),
                 version: Set(TransactionCountVelocityVersion::from(tc.version)),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()

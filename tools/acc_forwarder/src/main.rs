@@ -1,5 +1,8 @@
 use {
-    acc_forwarder::{fetch_and_send_account, fetch_and_send_policy_engine_accounts, read_lines},
+    acc_forwarder::{
+        fetch_and_send_account, fetch_and_send_data_accounts, fetch_and_send_identity_accounts,
+        fetch_and_send_policy_engine_accounts, read_lines,
+    },
     anyhow::Context,
     clap::Parser,
     figment::{map, value::Value},
@@ -136,7 +139,9 @@ async fn main() -> anyhow::Result<()> {
             ] {
                 fetch_and_send_account(*pubkey, &client, &messenger, true).await?;
             }
-            fetch_and_send_policy_engine_accounts(mint, &client, &messenger).await?;
+            fetch_and_send_data_accounts(data_pda, &client, &messenger).await?;
+            fetch_and_send_identity_accounts(identifier_pda, &client, &messenger).await?;
+            fetch_and_send_policy_engine_accounts(policy_pda, &client, &messenger).await?;
         }
     }
 

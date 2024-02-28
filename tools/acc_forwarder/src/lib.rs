@@ -1,4 +1,7 @@
-use solana_client::rpc_config::RpcProgramAccountsConfig;
+use solana_client::{
+    rpc_config::RpcProgramAccountsConfig,
+    rpc_filter::{Memcmp, RpcFilterType},
+};
 use {
     anyhow::Context,
     futures::stream::{BoxStream, StreamExt},
@@ -15,7 +18,6 @@ use {
         rpc_request::RpcRequest, rpc_response::Response as RpcResponse,
     },
     solana_program::{pubkey, pubkey::Pubkey},
-    solana_sdk::hash::hash,
     solana_sdk::{
         account::Account,
         commitment_config::{CommitmentConfig, CommitmentLevel},
@@ -29,6 +31,8 @@ use {
     },
     tokio_stream::wrappers::LinesStream,
 };
+
+const REGISTRY_OFFSET: usize = 9;
 
 pub const ASSET_CONTROLLER_PROGRAM_ID: Pubkey =
     pubkey!("DtrBDukceZpUnWmeNzqtoBQPdXW8p9xmWYG1z7qMt8qG");
@@ -91,29 +95,12 @@ pub fn find_policy_engine_pda(policy: &Pubkey) -> (solana_program::pubkey::Pubke
     )
 }
 
-fn get_discriminator(account_type: &str) -> [u8; 8] {
-    let discriminator_preimage = format!("account:{}", account_type);
-    let mut discriminator = [0u8; 8];
-    discriminator.copy_from_slice(&hash(discriminator_preimage.as_bytes()).to_bytes()[..8]);
-    discriminator
-}
-
 pub async fn fetch_and_send_program_accounts(
     program: Pubkey,
-    account_len: u64,
-    discriminator: [u8; 8],
     client: &RpcClient,
     messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
+    filters: Vec<RpcFilterType>,
 ) -> anyhow::Result<()> {
-    // Set up the filters for the get_program_accounts request
-    let filters = vec![
-        solana_client::rpc_filter::RpcFilterType::DataSize(account_len),
-        solana_client::rpc_filter::RpcFilterType::Memcmp(
-            solana_client::rpc_filter::Memcmp::new_raw_bytes(0, discriminator.to_vec()),
-        ),
-    ];
-
-    // Request the filtered program accounts from the Solana RPC node
     let accounts = client
         .get_program_accounts_with_config(
             &program,
@@ -149,53 +136,113 @@ pub async fn fetch_and_send_program_accounts(
     Ok(())
 }
 
-pub async fn fetch_and_send_policy_engine_accounts(
-    pubkey: Pubkey,
+pub async fn fetch_and_send_identity_accounts(
+    registry: Pubkey,
     client: &RpcClient,
     messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
 ) -> anyhow::Result<()> {
-    let policy_engine_pda = find_policy_engine_pda(&pubkey);
-    let identity_approval_descriminator = get_discriminator("IdentityApproval");
-    let transaction_amount_limit_descriminator = get_discriminator("TransactionAmountLimit");
-    let transaction_amount_velocity_descriminator = get_discriminator("TransactionAmountVelocity");
-    let transaction_count_velocity_descriminator = get_discriminator("TransactionCountVelocity");
+    const IDENTITY_ACCOUNT_LEN: u64 = 83;
 
+    fetch_and_send_program_accounts(
+        IDENTIFIER_REGISTRY_PROGRAM_ID,
+        client,
+        messenger,
+        vec![
+            RpcFilterType::DataSize(IDENTITY_ACCOUNT_LEN),
+            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
+                REGISTRY_OFFSET,
+                registry.to_bytes().to_vec(),
+            )),
+        ],
+    )
+    .await?;
+    Ok(())
+}
+
+pub async fn fetch_and_send_data_accounts(
+    registry: Pubkey,
+    client: &RpcClient,
+    messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
+) -> anyhow::Result<()> {
+    const DATA_ACCOUNT_LEN: u64 = 105;
+
+    fetch_and_send_program_accounts(
+        DATA_REGISTRY_PROGRAM_ID,
+        client,
+        messenger,
+        vec![
+            RpcFilterType::DataSize(DATA_ACCOUNT_LEN),
+            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
+                REGISTRY_OFFSET,
+                registry.to_bytes().to_vec(),
+            )),
+        ],
+    )
+    .await?;
+    Ok(())
+}
+
+pub async fn fetch_and_send_policy_engine_accounts(
+    registry: Pubkey,
+    client: &RpcClient,
+    messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
+) -> anyhow::Result<()> {
     const IDENTITY_APPROVAL_LEN: u64 = 20;
     const TRANSACATION_AMOUNT_LIMIT_LEN: u64 = 28;
     const TRANSACATION_AMOUNT_VELOCITY_LEN: u64 = 36;
     const TRANSACATION_COUNT_VELOCITY_LEN: u64 = 36;
 
     fetch_and_send_program_accounts(
-        policy_engine_pda.0,
-        IDENTITY_APPROVAL_LEN,
-        identity_approval_descriminator,
+        POLICY_ENGINE_PROGRAM_ID,
         client,
         messenger,
+        vec![
+            RpcFilterType::DataSize(IDENTITY_APPROVAL_LEN),
+            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
+                REGISTRY_OFFSET,
+                registry.to_bytes().to_vec(),
+            )),
+        ],
     )
     .await?;
     fetch_and_send_program_accounts(
-        policy_engine_pda.0,
-        TRANSACATION_AMOUNT_VELOCITY_LEN,
-        transaction_amount_velocity_descriminator,
+        POLICY_ENGINE_PROGRAM_ID,
         client,
         messenger,
+        vec![
+            RpcFilterType::DataSize(TRANSACATION_AMOUNT_VELOCITY_LEN),
+            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
+                REGISTRY_OFFSET,
+                registry.to_bytes().to_vec(),
+            )),
+        ],
     )
     .await?;
     fetch_and_send_program_accounts(
-        policy_engine_pda.0,
-        TRANSACATION_COUNT_VELOCITY_LEN,
-        transaction_count_velocity_descriminator,
+        POLICY_ENGINE_PROGRAM_ID,
         client,
         messenger,
+        vec![
+            RpcFilterType::DataSize(TRANSACATION_COUNT_VELOCITY_LEN),
+            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
+                REGISTRY_OFFSET,
+                registry.to_bytes().to_vec(),
+            )),
+        ],
     )
     .await?;
 
     fetch_and_send_program_accounts(
-        policy_engine_pda.0,
-        TRANSACATION_AMOUNT_LIMIT_LEN,
-        transaction_amount_limit_descriminator,
+        POLICY_ENGINE_PROGRAM_ID,
         client,
         messenger,
+        vec![
+            RpcFilterType::DataSize(TRANSACATION_AMOUNT_LIMIT_LEN),
+            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
+                REGISTRY_OFFSET,
+                registry.to_bytes().to_vec(),
+            )),
+        ],
     )
     .await?;
 
