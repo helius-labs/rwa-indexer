@@ -1,25 +1,14 @@
 use {
-    acc_forwarder::{fetch_and_send_account, read_lines},
+    acc_forwarder::{fetch_and_send_account, fetch_and_send_policy_engine_accounts, read_lines},
     anyhow::Context,
     clap::Parser,
     figment::{map, value::Value},
-    futures::{future::try_join_all, stream::StreamExt},
-    log::{info, warn},
+    futures::stream::StreamExt,
+    log::warn,
     plerkle_messenger::{MessengerConfig, ACCOUNT_STREAM},
-    solana_client::{
-        nonblocking::rpc_client::RpcClient, rpc_config::RpcTransactionConfig,
-        rpc_request::RpcRequest,
-    },
-    solana_sdk::{
-        commitment_config::{CommitmentConfig, CommitmentLevel},
-        pubkey::Pubkey,
-        signature::Signature,
-    },
-    solana_transaction_status::{
-        EncodedConfirmedTransactionWithStatusMeta, EncodedTransaction, UiInstruction, UiMessage,
-        UiParsedInstruction, UiTransactionEncoding,
-    },
-    std::{collections::HashSet, env, str::FromStr, sync::Arc},
+    solana_client::nonblocking::rpc_client::RpcClient,
+    solana_sdk::pubkey::Pubkey,
+    std::{env, str::FromStr, sync::Arc},
     tokio::sync::Mutex,
     tracing_subscriber::fmt,
 };
@@ -147,6 +136,7 @@ async fn main() -> anyhow::Result<()> {
             ] {
                 fetch_and_send_account(*pubkey, &client, &messenger, true).await?;
             }
+            fetch_and_send_policy_engine_accounts(mint, &client, &messenger).await?;
         }
     }
 

@@ -1,3 +1,4 @@
+use solana_client::rpc_config::RpcProgramAccountsConfig;
 use {
     anyhow::Context,
     futures::stream::{BoxStream, StreamExt},
@@ -14,6 +15,7 @@ use {
         rpc_request::RpcRequest, rpc_response::Response as RpcResponse,
     },
     solana_program::{pubkey, pubkey::Pubkey},
+    solana_sdk::hash::hash,
     solana_sdk::{
         account::Account,
         commitment_config::{CommitmentConfig, CommitmentLevel},
@@ -89,33 +91,115 @@ pub fn find_policy_engine_pda(policy: &Pubkey) -> (solana_program::pubkey::Pubke
     )
 }
 
-pub fn find_identity_approval_pda(policy_engine_seed: &[u8]) -> (Pubkey, u8) {
-    Pubkey::find_program_address(
-        &[b"identity_approval", policy_engine_seed],
-        &POLICY_ENGINE_PROGRAM_ID,
-    )
+fn get_discriminator(account_type: &str) -> [u8; 8] {
+    let discriminator_preimage = format!("account:{}", account_type);
+    let mut discriminator = [0u8; 8];
+    discriminator.copy_from_slice(&hash(discriminator_preimage.as_bytes()).to_bytes()[..8]);
+    discriminator
 }
 
-pub fn find_transaction_amount_limit_pda(policy_engine_seed: &[u8]) -> (Pubkey, u8) {
-    Pubkey::find_program_address(
-        &[b"transaction_amount_limit", policy_engine_seed],
-        &POLICY_ENGINE_PROGRAM_ID,
-    )
+pub async fn fetch_and_send_program_accounts(
+    program: Pubkey,
+    account_len: u64,
+    discriminator: [u8; 8],
+    client: &RpcClient,
+    messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
+) -> anyhow::Result<()> {
+    // Set up the filters for the get_program_accounts request
+    let filters = vec![
+        solana_client::rpc_filter::RpcFilterType::DataSize(account_len),
+        solana_client::rpc_filter::RpcFilterType::Memcmp(
+            solana_client::rpc_filter::Memcmp::new_raw_bytes(0, discriminator.to_vec()),
+        ),
+    ];
+
+    // Request the filtered program accounts from the Solana RPC node
+    let accounts = client
+        .get_program_accounts_with_config(
+            &program,
+            RpcProgramAccountsConfig {
+                filters: Some(filters),
+                account_config: RpcAccountInfoConfig {
+                    encoding: Some(solana_account_decoder::UiAccountEncoding::Base64),
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+        )
+        .await?;
+
+    let current_slot = client
+        .get_slot()
+        .await
+        .context("Failed to get current slot")?;
+
+    for (account_pubkey, account_info) in accounts {
+        let account = Account {
+            lamports: account_info.lamports,
+            owner: account_info.owner,
+            data: account_info.data,
+            executable: account_info.executable,
+            rent_epoch: account_info.rent_epoch,
+        };
+
+        send_account(account_pubkey, account, current_slot, messenger)
+            .await
+            .context(format!("Failed to send account {}", account_pubkey))?;
+    }
+    Ok(())
 }
 
-pub fn find_transaction_amount_velocity_pda(policy_engine_seed: &[u8]) -> (Pubkey, u8) {
-    Pubkey::find_program_address(
-        &[b"transaction_amount_velocity", policy_engine_seed],
-        &POLICY_ENGINE_PROGRAM_ID,
-    )
-}
+pub async fn fetch_and_send_policy_engine_accounts(
+    pubkey: Pubkey,
+    client: &RpcClient,
+    messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
+) -> anyhow::Result<()> {
+    let policy_engine_pda = find_policy_engine_pda(&pubkey);
+    let identity_approval_descriminator = get_discriminator("IdentityApproval");
+    let transaction_amount_limit_descriminator = get_discriminator("TransactionAmountLimit");
+    let transaction_amount_velocity_descriminator = get_discriminator("TransactionAmountVelocity");
+    let transaction_count_velocity_descriminator = get_discriminator("TransactionCountVelocity");
 
-// TransactionCountVelocity
-pub fn find_transaction_count_velocity_pda(policy_engine_seed: &[u8]) -> (Pubkey, u8) {
-    Pubkey::find_program_address(
-        &[b"transaction_count_velocity", policy_engine_seed],
-        &POLICY_ENGINE_PROGRAM_ID,
+    const IDENTITY_APPROVAL_LEN: u64 = 20;
+    const TRANSACATION_AMOUNT_LIMIT_LEN: u64 = 28;
+    const TRANSACATION_AMOUNT_VELOCITY_LEN: u64 = 36;
+    const TRANSACATION_COUNT_VELOCITY_LEN: u64 = 36;
+
+    fetch_and_send_program_accounts(
+        policy_engine_pda.0,
+        IDENTITY_APPROVAL_LEN,
+        identity_approval_descriminator,
+        client,
+        messenger,
     )
+    .await?;
+    fetch_and_send_program_accounts(
+        policy_engine_pda.0,
+        TRANSACATION_AMOUNT_VELOCITY_LEN,
+        transaction_amount_velocity_descriminator,
+        client,
+        messenger,
+    )
+    .await?;
+    fetch_and_send_program_accounts(
+        policy_engine_pda.0,
+        TRANSACATION_COUNT_VELOCITY_LEN,
+        transaction_count_velocity_descriminator,
+        client,
+        messenger,
+    )
+    .await?;
+
+    fetch_and_send_program_accounts(
+        policy_engine_pda.0,
+        TRANSACATION_AMOUNT_LIMIT_LEN,
+        transaction_amount_limit_descriminator,
+        client,
+        messenger,
+    )
+    .await?;
+
+    Ok(())
 }
 
 /// fetch account from node and send it to redis
