@@ -1,18 +1,20 @@
-FROM rust:1.73-bullseye AS builder
+FROM rust:1.74-bullseye AS builder
 RUN apt-get update -y && \
     apt-get install -y build-essential make git
 
 COPY Cargo.toml /rwa-system/Cargo.toml
 COPY transformer /rwa-system/transformer
+COPY common /rwa-system/common
 COPY indexer /rwa-system/indexer
 COPY migration /rwa-system/migration
 COPY rwa_types /rwa-system/rwa_types
+COPY tools /rwa-system/tools
 WORKDIR /rwa-system/indexer
 
 # Build application
 RUN cargo build --release
 
-FROM rust:1.73-slim-bullseye
+FROM rust:1.74-slim-bullseye
 ARG APP=/usr/src/app
 RUN apt update \
     && apt install -y curl ca-certificates tzdata \

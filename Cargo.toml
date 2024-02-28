@@ -65,10 +65,10 @@ light-poseidon = "0.2.0"
 plerkle_messenger = { git = "https://github.com/helius-labs/digital-asset-validator-plugin", branch = "rwa-plugin", package = "plerkle_messenger", features = [
   "redis",
 ]}
-asset_controller = {path = "../rwa/programs/asset_controller"}
-data_registry = {path = "../rwa/programs/data_registry"}
-identity_registry = {path = "../rwa/programs/identity_registry"}
-policy_engine = {path = "../rwa/programs/policy_engine"}
+asset_controller = {git = "https://github.com/helius-labs/rwa-token", branch = "helius", program = "programs/asset_controller", features = ["no-entrypoint"]}
+data_registry = {git = "https://github.com/helius-labs/rwa-token", branch = "helius", program = "programs/data_registry", features = ["no-entrypoint"]}
+identity_registry = {git = "https://github.com/helius-labs/rwa-token", branch = "helius", program = "programs/identity_registry", features = ["no-entrypoint"]}
+policy_engine = {git = "https://github.com/helius-labs/rwa-token", branch = "helius", program = "programs/policy_engine", features = ["no-entrypoint"]}
 plerkle_serialization = { git = "https://github.com/helius-labs/digital-asset-validator-plugin", branch = "rwa-plugin", package = "plerkle_serialization" }
 transformer = {path = "transformer"}
 reqwest = {version = "0.11.13", features = ["json"]}

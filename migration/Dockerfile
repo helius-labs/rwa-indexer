@@ -1,8 +1,11 @@
-FROM rust:1.73-bullseye
-COPY rust-services/blockbuster /blockbuster
-COPY rust-services/das-plugin/1.17.x/ /das-plugin/1.17.x
-COPY rust-services/das-system /das-system
-WORKDIR /das-system/migration
-ENV INIT_FILE_PATH=/das-system/init.sql
+FROM rust:1.74-bullseye
+COPY Cargo.toml /rwa-system/Cargo.toml
+COPY transformer /rwa-system/transformer
+COPY common /rwa-system/common
+COPY indexer /rwa-system/indexer
+COPY migration /rwa-system/migration
+COPY rwa_types /rwa-system/rwa_types
+COPY tools /rwa-system/tools
+WORKDIR /rwa-system/migration
 RUN cargo build --release
-CMD /das-system/target/release/migration up
+CMD /rwa-system/target/release/migration up
