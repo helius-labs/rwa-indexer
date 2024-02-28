@@ -1,22 +1,12 @@
 [workspace]
 members = [
+  "common",
   "migration",
   "indexer",
   "rwa_types",
   "tools/acc_forwarder",
   "transformer",
 ]
-
-[package]
-name = "rwa-indexer"
-version = "0.1.0"
-edition = "2021"
-authors = ["Helius Labs"]
-homepage = "https://helius.dev"
-license = "Apache-2.0"
-keywords = ["solana", "rwa-indexer"]
-
-resolver = "2"
 
 [workspace.dependencies]
 async-std = {version = "^1", features = ["attributes", "tokio1"]}
@@ -69,14 +59,14 @@ schemars_derive = "0.8.6"
 thiserror = "1.0.31"
 lazy_static = "1.4.0"
 light-poseidon = "0.2.0"
-plerkle_messenger = {path = "../das-plugin/1.17.x/plerkle_messenger", features = [
+plerkle_messenger = { git = "https://github.com/helius-labs/digital-asset-validator-plugin", branch = "rwa-plugin", package = "plerkle_messenger", features = [
   "redis",
 ]}
 asset_controller = {path = "../rwa/programs/asset_controller"}
 data_registry = {path = "../rwa/programs/data_registry"}
 identity_registry = {path = "../rwa/programs/identity_registry"}
 policy_engine = {path = "../rwa/programs/policy_engine"}
-plerkle_serialization = {path = "../das-plugin/1.17.x/plerkle_serialization"}
+plerkle_serialization = { git = "https://github.com/helius-labs/digital-asset-validator-plugin", branch = "rwa-plugin", package = "plerkle_serialization" }
 transformer = {path = "transformer"}
 reqwest = {version = "0.11.13", features = ["json"]}
 sea-orm = {version = "0.10.6", features = [
@@ -125,3 +115,14 @@ tracing-subscriber = {version = "0.3.16", features = [
 ]}
 url = "2.3.1"
 uuid = "1.0.0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+
+[profile.dev]
+# Do not produce debug info for ~40% faster incremental compilation.
+debug = 0
+# Some standard library files already come precompiled with debuginfo. We strip it for faster linking
+# and smaller binaries.
+strip = "debuginfo"
