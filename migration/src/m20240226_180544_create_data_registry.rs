@@ -69,7 +69,7 @@ impl MigrationTrait for Migration {
                             .not_null(),
                     )
                     .col(
-                        ColumnDef::new(DataAccount::Type)
+                        ColumnDef::new(DataAccount::DataType)
                             .enumeration(
                                 DataAccount::DataAccountType,
                                 all::<DataAccountType>().collect::<Vec<_>>(),

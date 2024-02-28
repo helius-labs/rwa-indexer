@@ -1,8 +1,5 @@
 use enum_iterator::all;
-use sea_orm_migration::{
-    prelude::*,
-    sea_orm::{ConnectionTrait, DatabaseBackend, Statement},
-};
+use sea_orm_migration::prelude::*;
 
 use crate::model::table::{
     IdentityAccount, IdentityAccountVersion, IdentityRegistry, IdentityRegistryVersion,
@@ -98,6 +95,7 @@ impl MigrationTrait for Migration {
                             )
                             .not_null(),
                     )
+                    .col(ColumnDef::new(IdentityAccount::Levels).json_binary())
                     .col(
                         ColumnDef::new(IdentityAccount::SlotUpdated)
                             .big_integer()
@@ -119,13 +117,6 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                "ALTER TABLE identity_account ADD COLUMN levels int[] not null;".to_string(),
-            ))
-            .await?;
         Ok(())
     }
 

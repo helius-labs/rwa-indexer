@@ -20,11 +20,11 @@ pub struct Model {
     pub time_frame: i64,
     pub comparsion_type: i32,
     pub version: TransactionCountVelocityVersion,
+    pub identity_levels: Option<Json>,
     pub slot_updated: i64,
     pub created_at: DateTime,
     pub last_updated_at: DateTime,
     pub total_limit: Decimal,
-    pub identity_levels: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveColumn)]
@@ -34,11 +34,11 @@ pub enum Column {
     TimeFrame,
     ComparsionType,
     Version,
+    IdentityLevels,
     SlotUpdated,
     CreatedAt,
     LastUpdatedAt,
     TotalLimit,
-    IdentityLevels,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DerivePrimaryKey)]
@@ -65,11 +65,11 @@ impl ColumnTrait for Column {
             Self::TimeFrame => ColumnType::BigInteger.def(),
             Self::ComparsionType => ColumnType::Integer.def(),
             Self::Version => TransactionCountVelocityVersion::db_type(),
+            Self::IdentityLevels => ColumnType::JsonBinary.def().null(),
             Self::SlotUpdated => ColumnType::BigInteger.def(),
             Self::CreatedAt => ColumnType::DateTime.def(),
             Self::LastUpdatedAt => ColumnType::DateTime.def(),
             Self::TotalLimit => ColumnType::Decimal(Some((20u32, 0u32))).def(),
-            Self::IdentityLevels => ColumnType::Custom("array".to_owned()).def(),
         }
     }
 }

@@ -37,13 +37,7 @@ sea-query = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 solana-account-decoder = { workspace = true }
-solana-client = { workspace = true }
-solana-geyser-plugin-interface = { workspace = true }
 solana-sdk = { workspace = true }
-solana-sdk-macro = { workspace = true }
-solana-transaction-status = { workspace = true }
-spl-token = { workspace = true }
-spl-token-2022 = { workspace = true }
 sqlx = { workspace = true }
 stretto = { workspace = true }
 thiserror = { workspace = true }

@@ -8,6 +8,7 @@ use sea_orm::{
     query::*, sea_query::OnConflict, ActiveValue::Set, ConnectionTrait, DatabaseConnection,
     DbBackend, EntityTrait,
 };
+use serde_json::json;
 use transformer::programs::identity_registry::IdentityRegistryProgram;
 
 pub async fn handle_identity_registry_program_account<'a, 'b, 'c>(
@@ -63,7 +64,7 @@ pub async fn handle_identity_registry_program_account<'a, 'b, 'c>(
                 owner: Set(ia.owner.to_bytes().to_vec()),
                 identity_registry: Set(ia.registry.to_bytes().to_vec()),
                 version: Set(IdentityAccountVersion::from(ia.version)),
-                levels: Set(serde_json::to_string(&ia.levels).unwrap_or_else(|_| "[]".to_string())),
+                levels: Set(Some(json!({ "levels": ia.levels }))),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
             };

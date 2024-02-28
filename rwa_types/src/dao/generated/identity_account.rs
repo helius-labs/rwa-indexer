@@ -19,10 +19,10 @@ pub struct Model {
     pub owner: Vec<u8>,
     pub identity_registry: Vec<u8>,
     pub version: IdentityAccountVersion,
+    pub levels: Option<Json>,
     pub slot_updated: i64,
     pub created_at: DateTime,
     pub last_updated_at: DateTime,
-    pub levels: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveColumn)]
@@ -31,10 +31,10 @@ pub enum Column {
     Owner,
     IdentityRegistry,
     Version,
+    Levels,
     SlotUpdated,
     CreatedAt,
     LastUpdatedAt,
-    Levels,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DerivePrimaryKey)]
@@ -60,10 +60,10 @@ impl ColumnTrait for Column {
             Self::Owner => ColumnType::Binary.def(),
             Self::IdentityRegistry => ColumnType::Binary.def(),
             Self::Version => IdentityAccountVersion::db_type(),
+            Self::Levels => ColumnType::JsonBinary.def().null(),
             Self::SlotUpdated => ColumnType::BigInteger.def(),
             Self::CreatedAt => ColumnType::DateTime.def(),
             Self::LastUpdatedAt => ColumnType::DateTime.def(),
-            Self::Levels => ColumnType::Custom("array".to_owned()).def(),
         }
     }
 }

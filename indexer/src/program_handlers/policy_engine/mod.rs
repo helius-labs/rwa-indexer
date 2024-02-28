@@ -12,6 +12,7 @@ use sea_orm::{
     query::*, sea_query::OnConflict, ActiveValue::Set, ConnectionTrait, DatabaseConnection,
     DbBackend, EntityTrait,
 };
+use serde_json::json;
 use transformer::programs::policy_engine::PolicyEngineProgram;
 
 pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
@@ -65,8 +66,9 @@ pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
             let active_model = identity_approval::ActiveModel {
                 id: Set(key_bytes.clone()),
                 comparsion_type: Set(ia.identity_filter.comparision_type as i32),
-                identity_levels: Set(serde_json::to_string(&ia.identity_filter.identity_levels)
-                    .unwrap_or_else(|_| "[]".to_string())),
+                identity_levels: Set(Some(
+                    json!({ "identity_levels": ia.identity_filter.identity_levels}),
+                )),
                 version: Set(IdentityApprovalVersion::from(ia.version)),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
@@ -99,8 +101,9 @@ pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
             let active_model = transaction_amount_limit::ActiveModel {
                 id: Set(key_bytes.clone()),
                 comparsion_type: Set(ta.identity_filter.comparision_type as i32),
-                identity_levels: Set(serde_json::to_string(&ta.identity_filter.identity_levels)
-                    .unwrap_or_else(|_| "[]".to_string())),
+                identity_levels: Set(Some(
+                    json!({ "identity_levels": ta.identity_filter.identity_levels}),
+                )),
                 version: Set(TransactionAmountLimitVersion::from(ta.version)),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
@@ -133,8 +136,9 @@ pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
             let active_model = transaction_amount_velocity::ActiveModel {
                 id: Set(key_bytes.clone()),
                 comparsion_type: Set(tv.identity_filter.comparision_type as i32),
-                identity_levels: Set(serde_json::to_string(&tv.identity_filter.identity_levels)
-                    .unwrap_or_else(|_| "[]".to_string())),
+                identity_levels: Set(Some(
+                    json!({ "identity_levels": tv.identity_filter.identity_levels }),
+                )),
                 version: Set(TransactionAmountVelocityVersion::from(tv.version)),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
@@ -167,8 +171,9 @@ pub async fn handle_policy_engine_program_account<'a, 'b, 'c>(
             let active_model = transaction_count_velocity::ActiveModel {
                 id: Set(key_bytes.clone()),
                 comparsion_type: Set(tc.identity_filter.comparision_type as i32),
-                identity_levels: Set(serde_json::to_string(&tc.identity_filter.identity_levels)
-                    .unwrap_or_else(|_| "[]".to_string())),
+                identity_levels: Set(Some(
+                    json!({ "identity_levels": tc.identity_filter.identity_levels}),
+                )),
                 version: Set(TransactionCountVelocityVersion::from(tc.version)),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()

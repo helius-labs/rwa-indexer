@@ -17,11 +17,11 @@ pub struct Model {
     pub id: Vec<u8>,
     pub asset_mint: Vec<u8>,
     pub owner: Vec<u8>,
+    pub transfer_amounts: Option<Json>,
+    pub transfer_timestamps: Option<Json>,
     pub slot_updated: i64,
     pub created_at: DateTime,
     pub last_updated_at: DateTime,
-    pub transfer_amounts: String,
-    pub transfer_timestamps: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveColumn)]
@@ -29,11 +29,11 @@ pub enum Column {
     Id,
     AssetMint,
     Owner,
+    TransferAmounts,
+    TransferTimestamps,
     SlotUpdated,
     CreatedAt,
     LastUpdatedAt,
-    TransferAmounts,
-    TransferTimestamps,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DerivePrimaryKey)]
@@ -58,11 +58,11 @@ impl ColumnTrait for Column {
             Self::Id => ColumnType::Binary.def(),
             Self::AssetMint => ColumnType::Binary.def(),
             Self::Owner => ColumnType::Binary.def(),
+            Self::TransferAmounts => ColumnType::JsonBinary.def().null(),
+            Self::TransferTimestamps => ColumnType::JsonBinary.def().null(),
             Self::SlotUpdated => ColumnType::BigInteger.def(),
             Self::CreatedAt => ColumnType::DateTime.def(),
             Self::LastUpdatedAt => ColumnType::DateTime.def(),
-            Self::TransferAmounts => ColumnType::Custom("array".to_owned()).def(),
-            Self::TransferTimestamps => ColumnType::Custom("array".to_owned()).def(),
         }
     }
 }

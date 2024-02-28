@@ -101,6 +101,7 @@ impl MigrationTrait for Migration {
                             .integer()
                             .not_null(),
                     )
+                    .col(ColumnDef::new(IdentityApproval::IdentityLevels).json_binary())
                     .col(
                         ColumnDef::new(IdentityApproval::Version)
                             .enumeration(
@@ -131,15 +132,6 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                "ALTER TABLE identity_approval ADD COLUMN identity_levels int[] not null;"
-                    .to_string(),
-            ))
-            .await?;
-
-        manager
             .create_table(
                 Table::create()
                     .table(TransactionAmountVelocity::Table)
@@ -165,6 +157,7 @@ impl MigrationTrait for Migration {
                             .integer()
                             .not_null(),
                     )
+                    .col(ColumnDef::new(IdentityApproval::IdentityLevels).json_binary())
                     .col(
                         ColumnDef::new(TransactionAmountVelocity::Version)
                             .enumeration(
@@ -204,15 +197,6 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
-        .get_connection()
-        .execute(Statement::from_string(
-            DatabaseBackend::Postgres,
-            "ALTER TABLE transaction_amount_velocity ADD COLUMN identity_levels int[] not null;"
-                .to_string(),
-        ))
-        .await?;
-
-        manager
             .create_table(
                 Table::create()
                     .table(TransactionAmountLimit::Table)
@@ -241,6 +225,7 @@ impl MigrationTrait for Migration {
                             )
                             .not_null(),
                     )
+                    .col(ColumnDef::new(IdentityApproval::IdentityLevels).json_binary())
                     .col(
                         ColumnDef::new(TransactionAmountLimit::SlotUpdated)
                             .big_integer()
@@ -267,15 +252,6 @@ impl MigrationTrait for Migration {
             .execute(Statement::from_string(
                 DatabaseBackend::Postgres,
                 r#"ALTER TABLE transaction_amount_limit ADD COLUMN total_limit uint64_t not null;"#
-                    .to_string(),
-            ))
-            .await?;
-
-        manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                "ALTER TABLE transaction_amount_limit ADD COLUMN identity_levels int[] not null;"
                     .to_string(),
             ))
             .await?;
@@ -314,6 +290,7 @@ impl MigrationTrait for Migration {
                             )
                             .not_null(),
                     )
+                    .col(ColumnDef::new(IdentityApproval::IdentityLevels).json_binary())
                     .col(
                         ColumnDef::new(TransactionCountVelocity::SlotUpdated)
                             .big_integer()
@@ -340,15 +317,6 @@ impl MigrationTrait for Migration {
             .execute(Statement::from_string(
                 DatabaseBackend::Postgres,
                 r#"ALTER TABLE transaction_count_velocity ADD COLUMN total_limit "uint64_t" not null;"#
-                    .to_string(),
-            ))
-            .await?;
-
-        manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                "ALTER TABLE transaction_count_velocity ADD COLUMN identity_levels int[] not null;"
                     .to_string(),
             ))
             .await?;

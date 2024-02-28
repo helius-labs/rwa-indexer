@@ -139,6 +139,8 @@ impl MigrationTrait for Migration {
                             .not_null(),
                     )
                     .col(ColumnDef::new(TrackerAccount::Owner).binary().not_null())
+                    .col(ColumnDef::new(TrackerAccount::TransferAmounts).json_binary())
+                    .col(ColumnDef::new(TrackerAccount::TransferTimestamps).json_binary())
                     .col(
                         ColumnDef::new(TrackerAccount::SlotUpdated)
                             .big_integer()
@@ -158,24 +160,6 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await?;
-
-        manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                "ALTER TABLE tracker_account ADD COLUMN transfer_amounts TEXT NOT NULL DEFAULT '[]';"
-                    .to_string(),
-            ))
-            .await?;
-
-        manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                "ALTER TABLE tracker_account ADD COLUMN transfer_timestamps TEXT NOT NULL DEFAULT '[]';"
-                    .to_string(),
-            ))
             .await?;
 
         Ok(())

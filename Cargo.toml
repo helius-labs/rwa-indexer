@@ -8,6 +8,8 @@ members = [
   "transformer",
 ]
 
+resolver = "2"
+
 [workspace.dependencies]
 async-std = {version = "^1", features = ["attributes", "tokio1"]}
 async-stream = "0.3.5"
@@ -27,6 +29,7 @@ clap = {version = "4.1.4", features = ["derive", "cargo"]}
 env_logger = "0.10.0"
 enum-iterator = "1.2.0"
 enum-iterator-derive = "1.1.0"
+git2 = "0.18.1"
 figment = {version = "0.10.9", features = ["env", "test", "json"]}
 futures = "0.3.24"
 futures-util = "0.3.27"
@@ -80,17 +83,14 @@ sea-query = {version = "0.28.1", features = ["postgres-array"]}
 serde_json = "1.0.82"
 serde = "1.0.140"
 spl-pod = { version = "0.1.0", features = ["serde-traits"] }
-spl-token-group-interface = "0.1.0"
-solana-program = "1.17.16"
-solana-account-decoder = "1.17.16"
-solana-client = "1.17.16"
-solana-geyser-plugin-interface = {version = "1.17.16"}
-solana-sdk-macro = "1.17.16"
+solana-account-decoder = "1.17.20"
+solana-client = "1.17.20"
+solana-geyser-plugin-interface = {version = "1.17.20"}
+solana-program = "1.17.20"
+solana-sdk-macro = "1.17.20"
 solana-sdk = "1.17.20"
-solana-transaction-status = "1.17.16"
-solana-zk-token-sdk = "1.17.16"
-spl-token = {version = "4.0", features = ["no-entrypoint"]}
-spl-token-2022 = {version = "1.0", features = ["no-entrypoint"]}
+solana-transaction-status = "1.17.20"
+solana-zk-token-sdk = "1.17.20"
 sqlx = {version = "0.6.2", features = [
   "macros",
   "runtime-tokio-rustls",

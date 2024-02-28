@@ -60,7 +60,7 @@ pub async fn handle_data_registry_program_account<'a, 'b, 'c>(
                 name: Set(da.name.clone()),
                 uri: Set(da.uri.clone()),
                 data_registry: Set(da.data_registry.to_bytes().to_vec()),
-                _type: Set(DataAccountType::from(da._type.clone())),
+                data_type: Set(DataAccountType::from(da._type.clone())),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
             };
@@ -72,7 +72,7 @@ pub async fn handle_data_registry_program_account<'a, 'b, 'c>(
                             data_account::Column::Name,
                             data_account::Column::Uri,
                             data_account::Column::DataRegistry,
-                            data_account::Column::Type,
+                            data_account::Column::DataType,
                             data_account::Column::SlotUpdated,
                         ])
                         .to_owned(),

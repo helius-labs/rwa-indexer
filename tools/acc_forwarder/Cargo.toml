@@ -24,8 +24,6 @@ solana-account-decoder = {workspace = true}
 solana-client = {workspace = true}
 solana-program = {workspace = true}
 solana-sdk = {workspace = true}
-solana-transaction-status = {workspace = true}
-spl-token = {workspace = true}
 sqlx = {workspace = true}
 tokio = {workspace = true}
 tokio-stream = {workspace = true}

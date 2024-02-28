@@ -8,6 +8,7 @@ use sea_orm::{
     query::*, sea_query::OnConflict, ActiveValue::Set, ConnectionTrait, DatabaseConnection,
     DbBackend, EntityTrait,
 };
+use serde_json::json;
 use transformer::programs::asset_controller::AssetControllerProgram;
 
 pub async fn handle_asset_controller_program_account<'a, 'b, 'c>(
@@ -105,10 +106,10 @@ pub async fn handle_asset_controller_program_account<'a, 'b, 'c>(
                 id: Set(key_bytes.clone()),
                 asset_mint: Set(ta.asset_mint.to_bytes().to_vec()),
                 owner: Set(ta.owner.to_bytes().to_vec()),
-                transfer_amounts: Set(serde_json::to_string(&ta.transfer_amounts)
-                    .unwrap_or_else(|_| "[]".to_string())),
-                transfer_timestamps: Set(serde_json::to_string(&ta.transfer_timestamps)
-                    .unwrap_or_else(|_| "[]".to_string())),
+                transfer_amounts: Set(Some(json!({ "transfer_amounts": ta.transfer_amounts }))),
+                transfer_timestamps: Set(Some(
+                    json!({ "transfer_timestamps": ta.transfer_timestamps }),
+                )),
                 slot_updated: Set(account_update.slot() as i64),
                 ..Default::default()
             };

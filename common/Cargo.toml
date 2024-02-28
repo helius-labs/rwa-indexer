@@ -4,14 +4,7 @@ name = "common"
 version = "0.1.0"
 
 [dependencies]
-figment = {version = "0.10.6", features = ["env", "test", "json"]}
-git2 = "0.18.1"
-serde = "1.0.133"
-sqlx = {version = "0.6.2", features = [
-  "macros",
-  "runtime-tokio-rustls",
-  "postgres",
-  "uuid",
-  "offline",
-  "json",
-]}
+figment = {workspace = true}
+git2 = {workspace = true}
+serde = {workspace = true}
+sqlx =  {workspace = true}
