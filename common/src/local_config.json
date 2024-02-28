@@ -1,0 +1,22 @@
+{
+    "messenger_config": {
+        "messenger_type": "Redis",
+        "connection_config": {
+            "redis_connection_str": "redis://localhost",
+            "batch_size": 1
+        }
+    },
+    "database_url": "postgres://ingest@localhost/das",
+    "database_urls": "postgres://ingest@localhost/das",
+    "database_config": {
+        "listener_channel": "backfill_item_added",
+        "url": "postgres://ingest@localhost/das"
+    },
+    "role": "Indexer",
+    "rpc_url": "https://rpc.helius.xyz?api-key=40826ac7-a073-4655-b61a-c877402d1075",
+    "rpc_config": {
+        "commitment": "finalized",
+        "url": "https://rpc.helius.xyz?api-key=40826ac7-a073-4655-b61a-c877402d1075"
+    },
+    "server_port": 9090
+}
