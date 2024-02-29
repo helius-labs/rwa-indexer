@@ -6,6 +6,7 @@ COPY indexer /rwa-system/indexer
 COPY migration /rwa-system/migration
 COPY rwa_types /rwa-system/rwa_types
 COPY tools /rwa-system/tools
+COPY api /rwa-system/api
 WORKDIR /rwa-system/migration
 RUN cargo build --release
 CMD /rwa-system/target/release/migration up

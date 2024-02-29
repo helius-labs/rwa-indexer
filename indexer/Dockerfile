@@ -5,10 +5,12 @@ RUN apt-get update -y && \
 COPY Cargo.toml /rwa-system/Cargo.toml
 COPY transformer /rwa-system/transformer
 COPY common /rwa-system/common
-COPY indexer /rwa-system/indexer
 COPY migration /rwa-system/migration
 COPY rwa_types /rwa-system/rwa_types
 COPY tools /rwa-system/tools
+COPY api /rwa-system/api
+COPY indexer /rwa-system/indexer
+
 WORKDIR /rwa-system/indexer
 
 # Build application
