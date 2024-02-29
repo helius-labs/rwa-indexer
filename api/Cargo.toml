@@ -1,0 +1,39 @@
+[package]
+edition = "2021"
+name = "rwa_api"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-trait = {workspace = true}
+bs58 = {workspace = true}
+cadence = {workspace = true}
+cadence-macros = {workspace = true}
+common = {workspace = true}
+rwa_types = {workspace = true}
+env_logger = {workspace = true}
+figment = {workspace = true}
+hyper = {workspace = true}
+jsonrpsee = {workspace = true}
+jsonrpsee-core = {workspace = true}
+log = {workspace = true}
+metrics = {workspace = true}
+open-rpc-derive = {workspace = true}
+open-rpc-schema = {workspace = true}
+schemars = {workspace = true}
+schemars_derive = {workspace = true}
+sea-orm = {workspace = true}
+serde = {workspace = true}
+serde_json = {workspace = true}
+solana-sdk = {workspace = true}
+sqlx = {workspace = true}
+thiserror = {workspace = true}
+tokio = {workspace = true}
+tokio-postgres = {workspace = true}
+tower = {workspace = true}
+tower-http = {workspace = true}
+tracing = {workspace = true}
+
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
+tikv-jemallocator = "0.5"
