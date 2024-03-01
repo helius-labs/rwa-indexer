@@ -1,0 +1,28 @@
+---
+source: tests/tests/integration_tests/account_update_tests.rs
+expression: response
+---
+{
+  "asset_controller": {
+    "address": "ApZaoG36eYaKuzHHMLDdQMBE8WBwjGKjQ7HwAQUi73TD",
+    "mint": "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe",
+    "authority": "9xakHBpJ8gQTi4NYKyLhUm786e4sEeWxMQPz2ph7SPLt",
+    "delegate": "ApZaoG36eYaKuzHHMLDdQMBE8WBwjGKjQ7HwAQUi73TD",
+    "version": 1,
+    "closed": false
+  },
+  "data_registry": {
+    "address": "JAsaNchAr87pwHCyccUa5CZyjx6swD1GWmBnYXUK3zVn",
+    "mint": "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe",
+    "version": 1,
+    "closed": false
+  },
+  "identity_registry": {
+    "address": "E2XnGXCFEugYLPRvfiVD8EQ8QHLFcymqA9dP4vBboWwP",
+    "mint": "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe",
+    "authority": "9xakHBpJ8gQTi4NYKyLhUm786e4sEeWxMQPz2ph7SPLt",
+    "delegate": "E2XnGXCFEugYLPRvfiVD8EQ8QHLFcymqA9dP4vBboWwP",
+    "version": 1,
+    "closed": false
+  }
+}
