@@ -18,6 +18,7 @@ pub struct DataRegistryAccount {
     pub address: String,
     pub mint: String,
     pub version: u8,
+    pub closed: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -72,6 +73,7 @@ impl From<data_registry::Model> for DataRegistryAccount {
             address: bs58::encode(data.clone().id).into_string(),
             mint: bs58::encode(data.asset_mint).into_string(),
             version: data.version as u8,
+            closed: data.closed,
         }
     }
 }

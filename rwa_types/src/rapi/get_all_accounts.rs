@@ -11,7 +11,7 @@ pub async fn get_all_accounts_controller(
     id: Vec<u8>,
 ) -> Result<Option<asset_controller::Model>, DbErr> {
     let account = asset_controller::Entity::find()
-        .filter(asset_controller::Column::AssetMint.is_in(id.clone()))
+        .filter(asset_controller::Column::AssetMint.eq(id.clone()))
         .one(db)
         .await?;
     Ok(account)
@@ -22,7 +22,7 @@ pub async fn get_data_registry(
     id: Vec<u8>,
 ) -> Result<Option<data_registry::Model>, DbErr> {
     let account = data_registry::Entity::find()
-        .filter(data_registry::Column::AssetMint.is_in(id.clone()))
+        .filter(data_registry::Column::AssetMint.eq(id.clone()))
         .one(db)
         .await?;
     Ok(account)
@@ -33,7 +33,7 @@ pub async fn get_identity_registry(
     id: Vec<u8>,
 ) -> Result<Option<identity_registry::Model>, DbErr> {
     let account = identity_registry::Entity::find()
-        .filter(identity_registry::Column::AssetMint.is_in(id.clone()))
+        .filter(identity_registry::Column::AssetMint.eq(id.clone()))
         .one(db)
         .await?;
     Ok(account)
@@ -44,7 +44,7 @@ pub async fn get_policy_engine(
     id: Vec<u8>,
 ) -> Result<Option<policy_engine_account::Model>, DbErr> {
     let account = policy_engine_account::Entity::find()
-        .filter(policy_engine_account::Column::AssetMint.is_in(id.clone()))
+        .filter(policy_engine_account::Column::AssetMint.eq(id.clone()))
         .one(db)
         .await?;
     Ok(account)

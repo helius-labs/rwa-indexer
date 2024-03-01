@@ -5,6 +5,7 @@ mod m20240226_180047_create_asset_controller;
 mod m20240226_180544_create_data_registry;
 mod m20240226_180606_create_identity_registry;
 mod m20240226_180630_create_policy_engine;
+mod m20240301_101641_create_inital_indices;
 mod model;
 
 pub struct Migrator;
@@ -18,6 +19,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20240226_180544_create_data_registry::Migration),
             Box::new(m20240226_180606_create_identity_registry::Migration),
             Box::new(m20240226_180630_create_policy_engine::Migration),
+            Box::new(m20240301_101641_create_inital_indices::Migration),
         ]
     }
 }

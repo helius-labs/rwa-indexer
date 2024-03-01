@@ -3,12 +3,14 @@ use sea_orm_migration::prelude::*;
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum AssetControllerVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum DataRegistryVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
@@ -21,37 +23,44 @@ pub enum DataAccountType {
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum IdentityAccountVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum IdentityRegistryVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum PolicyEngineAccountVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum IdentityApprovalVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum TransactionAmountVelocityVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum TransactionAmountLimitVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
 pub enum TransactionCountVelocityVersion {
-    V1 = 1,
+    V0,
+    V1,
 }
 
 #[derive(Copy, Clone, Iden)]

@@ -40,7 +40,7 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(AssetController::AssetControllerVersion)
-                    .values(vec![AssetControllerVersion::V1])
+                    .values(vec![AssetControllerVersion::V0, AssetControllerVersion::V1])
                     .to_owned(),
             )
             .await?;
@@ -49,7 +49,7 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(DataRegistry::DataRegistryVersion)
-                    .values(vec![DataRegistryVersion::V1])
+                    .values(vec![DataRegistryVersion::V0, DataRegistryVersion::V1])
                     .to_owned(),
             )
             .await?;
@@ -72,7 +72,7 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(IdentityAccount::IdentityAccountVersion)
-                    .values(vec![IdentityAccountVersion::V1])
+                    .values(vec![IdentityAccountVersion::V0, IdentityAccountVersion::V1])
                     .to_owned(),
             )
             .await?;
@@ -81,7 +81,10 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(IdentityRegistry::IdentityRegistryVersion)
-                    .values(vec![IdentityRegistryVersion::V1])
+                    .values(vec![
+                        IdentityRegistryVersion::V0,
+                        IdentityRegistryVersion::V1,
+                    ])
                     .to_owned(),
             )
             .await?;
@@ -90,7 +93,10 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(PolicyEngineAccount::PolicyEngineAccountVersion)
-                    .values(vec![PolicyEngineAccountVersion::V1])
+                    .values(vec![
+                        PolicyEngineAccountVersion::V0,
+                        PolicyEngineAccountVersion::V1,
+                    ])
                     .to_owned(),
             )
             .await?;
@@ -99,7 +105,10 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(IdentityApproval::IdentityApprovalVersion)
-                    .values(vec![IdentityApprovalVersion::V1])
+                    .values(vec![
+                        IdentityApprovalVersion::V0,
+                        IdentityApprovalVersion::V1,
+                    ])
                     .to_owned(),
             )
             .await?;
@@ -108,7 +117,10 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(TransactionAmountVelocity::TransactionAmountVelocityVersion)
-                    .values(vec![TransactionAmountVelocityVersion::V1])
+                    .values(vec![
+                        TransactionAmountVelocityVersion::V0,
+                        TransactionAmountVelocityVersion::V1,
+                    ])
                     .to_owned(),
             )
             .await?;
@@ -117,7 +129,10 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(TransactionAmountLimit::TransactionAmountLimitVersion)
-                    .values(vec![TransactionAmountLimitVersion::V1])
+                    .values(vec![
+                        TransactionAmountLimitVersion::V0,
+                        TransactionAmountLimitVersion::V1,
+                    ])
                     .to_owned(),
             )
             .await?;
@@ -126,7 +141,10 @@ impl MigrationTrait for Migration {
             .create_type(
                 Type::create()
                     .as_enum(TransactionCountVelocity::TransactionCountVelocityVersion)
-                    .values(vec![TransactionCountVelocityVersion::V1])
+                    .values(vec![
+                        TransactionCountVelocityVersion::V0,
+                        TransactionCountVelocityVersion::V1,
+                    ])
                     .to_owned(),
             )
             .await?;
