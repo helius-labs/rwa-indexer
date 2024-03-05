@@ -2,14 +2,7 @@ FROM rust:1.74-bullseye  AS builder
 RUN apt-get update -y && \
     apt-get install -y build-essential make git
 
-COPY Cargo.toml /rwa-system/Cargo.toml
-COPY transformer /rwa-system/transformer
-COPY common /rwa-system/common
-COPY indexer /rwa-system/indexer
-COPY migration /rwa-system/migration
-COPY rwa_types /rwa-system/rwa_types
-COPY tools /rwa-system/tools
-COPY api /rwa-system/api
+COPY . /rwa-system/
 
 WORKDIR /rwa-system/api
 # # Build application
