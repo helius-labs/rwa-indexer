@@ -6,7 +6,7 @@ use super::{
     PolicyEngineAccount,
 };
 
-pub async fn get_all_accounts_controller(
+pub async fn get_rwa_accounts_by_mint_controller(
     db: &DatabaseConnection,
     id: Vec<u8>,
 ) -> Result<Option<asset_controller::Model>, DbErr> {
@@ -50,8 +50,11 @@ pub async fn get_policy_engine(
     Ok(account)
 }
 
-pub async fn get_all_accounts(db: &DatabaseConnection, id: Vec<u8>) -> Result<FullAccount, DbErr> {
-    let get_accounts_controller_future = get_all_accounts_controller(db, id.clone());
+pub async fn get_rwa_accounts_by_mint(
+    db: &DatabaseConnection,
+    id: Vec<u8>,
+) -> Result<FullAccount, DbErr> {
+    let get_accounts_controller_future = get_rwa_accounts_by_mint_controller(db, id.clone());
     let get_data_registry_future = get_data_registry(db, id.clone());
     let get_identity_registry_future = get_identity_registry(db, id.clone());
     let get_policy_engine_future = get_policy_engine(db, id.clone());

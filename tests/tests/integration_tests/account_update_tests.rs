@@ -10,7 +10,7 @@ use super::common::*;
 #[tokio::test]
 #[serial]
 #[named]
-async fn test_get_all_accounts() {
+async fn test_get_rwa_accounts_by_mint() {
     let name = trim_test_name(function_name!());
     let setup = TestSetup::new(name.clone()).await;
 
@@ -19,12 +19,16 @@ async fn test_get_all_accounts() {
     )];
     apply_migrations_and_delete_data(setup.db.clone()).await;
     index_seed_events(&setup, seeds.iter().collect_vec()).await;
-    let request: api::GetAllAccounts = serde_json::from_str(
+    let request: api::GetRwaAccountsByMint = serde_json::from_str(
         r#"{
         "id": "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe"
     }"#,
     )
     .unwrap();
-    let response = setup.rwa_api.get_all_accounts(request).await.unwrap();
+    let response = setup
+        .rwa_api
+        .get_rwa_accounts_by_mint(request)
+        .await
+        .unwrap();
     insta::assert_json_snapshot!(setup.name.clone(), response);
 }

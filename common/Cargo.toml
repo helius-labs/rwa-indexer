@@ -7,4 +7,6 @@ version = "0.1.0"
 figment = {workspace = true}
 git2 = {workspace = true}
 serde = {workspace = true}
+solana-program = {workspace = true}
+solana-sdk = {workspace = true}
 sqlx =  {workspace = true}

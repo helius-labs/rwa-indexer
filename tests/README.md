@@ -28,6 +28,6 @@ this struct, store the results of these queries as snapshots through the `insta`
 future runs of the same test produce the same snapshot.
 
 Note that tests do not actually run the indexer binaries and the API binaries and only test the primary internal functions
-of each, e.g. `handle_account_update` for the indexer and functions like `get_all_accounts`
+of each, e.g. `handle_account_update` for the indexer and functions like `get_rwa_accounts_by_mint`
 for the binary. By following this approach, we are able to test the vast majority of the code
 in a way that's easy to setup and fast to run -- avoiding to have to compile and run multiple binaries.

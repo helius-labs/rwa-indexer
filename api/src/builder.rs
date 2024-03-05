@@ -22,15 +22,18 @@ impl RpcApiBuilder {
             rpc_context.readiness().await.map_err(Into::into)
         })?;
 
-        // get_all_accounts
-        module.register_async_method("get_all_accounts", |rpc_params, rpc_context| async move {
-            let payload = rpc_params.parse::<GetAllAccounts>()?;
-            rpc_context
-                .get_all_accounts(payload)
-                .await
-                .map_err(Into::into)
-        })?;
-        module.register_alias("getAllAccounts", "get_all_accounts")?;
+        // get_rwa_accounts_by_mint
+        module.register_async_method(
+            "get_rwa_accounts_by_mint",
+            |rpc_params, rpc_context| async move {
+                let payload = rpc_params.parse::<GetRwaAccountsByMint>()?;
+                rpc_context
+                    .get_rwa_accounts_by_mint(payload)
+                    .await
+                    .map_err(Into::into)
+            },
+        )?;
+        module.register_alias("getRwaAccountsByMint", "get_rwa_accounts_by_mint")?;
 
         module.register_async_method("schema", |_, rpc_context| async move {
             Ok(rpc_context.schema())

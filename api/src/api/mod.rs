@@ -9,7 +9,7 @@ pub use api_impl::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema, Default)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
-pub struct GetAllAccounts {
+pub struct GetRwaAccountsByMint {
     pub id: String,
 }
 
@@ -20,12 +20,12 @@ pub trait ApiContract: Send + Sync + 'static {
     async fn readiness(&self) -> Result<(), RwaApiError>;
 
     #[rpc(
-        name = "getAllAccounts",
+        name = "getRwaAccountsByMint",
         params = "named",
         summary = "Get all RWA accounts by its mint"
     )]
-    async fn get_all_accounts(
+    async fn get_rwa_accounts_by_mint(
         &self,
-        payload: GetAllAccounts,
+        payload: GetRwaAccountsByMint,
     ) -> Result<rwa_types::rapi::FullAccount, RwaApiError>;
 }

@@ -22,7 +22,7 @@ use log::{error, info};
 use plerkle_messenger::{
     redis_messenger::RedisMessenger, ConsumptionType, ACCOUNT_STREAM, ACC_BACKFILL,
 };
-use std::{sync::Arc, time};
+
 use tokio::{signal, task::JoinSet};
 
 #[tokio::main(flavor = "multi_thread")]
