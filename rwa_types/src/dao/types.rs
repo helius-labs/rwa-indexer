@@ -1,10 +1,9 @@
 use super::sea_orm_active_enums::{
     AssetControllerVersion, DataAccountType, DataRegistryVersion, IdentityAccountVersion,
-    IdentityApprovalVersion, IdentityRegistryVersion, PolicyAccountVersion,
-    TransactionAmountLimitVersion, TransactionAmountVelocityVersion,
-    TransactionCountVelocityVersion,
+    IdentityRegistryVersion, PolicyAccountType, PolicyAccountVersion,
 };
 use data_registry::state::DataAccountType as ProgramDataAccountType;
+use policy_engine::Policy;
 
 impl From<u8> for AssetControllerVersion {
     fn from(version: u8) -> Self {
@@ -62,38 +61,15 @@ impl From<u8> for PolicyAccountVersion {
     }
 }
 
-impl From<u8> for IdentityApprovalVersion {
-    fn from(version: u8) -> Self {
-        match version {
-            1 => IdentityApprovalVersion::V1,
-            _ => IdentityApprovalVersion::V1,
-        }
-    }
-}
-
-impl From<u8> for TransactionAmountLimitVersion {
-    fn from(version: u8) -> Self {
-        match version {
-            1 => TransactionAmountLimitVersion::V1,
-            _ => TransactionAmountLimitVersion::V1,
-        }
-    }
-}
-
-impl From<u8> for TransactionAmountVelocityVersion {
-    fn from(version: u8) -> Self {
-        match version {
-            1 => TransactionAmountVelocityVersion::V1,
-            _ => TransactionAmountVelocityVersion::V1,
-        }
-    }
-}
-
-impl From<u8> for TransactionCountVelocityVersion {
-    fn from(version: u8) -> Self {
-        match version {
-            1 => TransactionCountVelocityVersion::V1,
-            _ => TransactionCountVelocityVersion::V1,
+impl From<Policy> for PolicyAccountType {
+    fn from(ptype: Policy) -> Self {
+        match ptype {
+            Policy::IdentityApproval => PolicyAccountType::IdentityApproval,
+            Policy::TransactionAmountLimit { .. } => PolicyAccountType::TransactionAmountLimit,
+            Policy::TransactionAmountVelocity { .. } => {
+                PolicyAccountType::TransactionAmountVelocity
+            }
+            Policy::TransactionCountVelocity { .. } => PolicyAccountType::TransactionCountVelocity,
         }
     }
 }

@@ -7,9 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
-    enum_name = "identity_account_version"
+    enum_name = "asset_controller_version"
 )]
-pub enum IdentityAccountVersion {
+pub enum AssetControllerVersion {
     #[sea_orm(string_value = "v0")]
     V0,
     #[sea_orm(string_value = "v1")]
@@ -19,9 +19,25 @@ pub enum IdentityAccountVersion {
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
-    enum_name = "asset_controller_version"
+    enum_name = "policy_account_type"
 )]
-pub enum AssetControllerVersion {
+pub enum PolicyAccountType {
+    #[sea_orm(string_value = "identity_approval")]
+    IdentityApproval,
+    #[sea_orm(string_value = "transaction_amount_limit")]
+    TransactionAmountLimit,
+    #[sea_orm(string_value = "transaction_amount_velocity")]
+    TransactionAmountVelocity,
+    #[sea_orm(string_value = "transaction_count_velocity")]
+    TransactionCountVelocity,
+}
+#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(
+    rs_type = "String",
+    db_type = "Enum",
+    enum_name = "policy_account_version"
+)]
+pub enum PolicyAccountVersion {
     #[sea_orm(string_value = "v0")]
     V0,
     #[sea_orm(string_value = "v1")]
@@ -55,9 +71,9 @@ pub enum DataRegistryVersion {
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
-    enum_name = "policy_account_version"
+    enum_name = "identity_registry_version"
 )]
-pub enum PolicyAccountVersion {
+pub enum IdentityRegistryVersion {
     #[sea_orm(string_value = "v0")]
     V0,
     #[sea_orm(string_value = "v1")]
@@ -67,25 +83,9 @@ pub enum PolicyAccountVersion {
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
-    enum_name = "policy_account_type"
+    enum_name = "identity_account_version"
 )]
-pub enum PolicyAccountType {
-    #[sea_orm(string_value = "identity_approval")]
-    IdentityApproval,
-    #[sea_orm(string_value = "transaction_amount_limit")]
-    TransactionAmountLimit,
-    #[sea_orm(string_value = "transaction_amount_velocity")]
-    TransactionAmountVelocity,
-    #[sea_orm(string_value = "transaction_count_velocity")]
-    TransactionCountVelocity,
-}
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
-#[sea_orm(
-    rs_type = "String",
-    db_type = "Enum",
-    enum_name = "identity_registry_version"
-)]
-pub enum IdentityRegistryVersion {
+pub enum IdentityAccountVersion {
     #[sea_orm(string_value = "v0")]
     V0,
     #[sea_orm(string_value = "v1")]

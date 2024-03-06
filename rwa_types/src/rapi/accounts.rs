@@ -1,7 +1,8 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::dao::{asset_controller, data_registry, identity_registry, policy_engine_account};
+use crate::dao::{asset_controller, data_registry, identity_registry, policy_account};
+use num_traits::ToPrimitive;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct AssetControllerAccount {
@@ -35,10 +36,11 @@ pub struct IdentityRegistryAccount {
 pub struct PolicyAccount {
     pub address: String,
     pub mint: String,
-    pub authority: String,
-    pub delegate: String,
-    pub max_time_frame: i64,
     pub version: u8,
+    pub policy: String,
+    pub limit: u64,
+    pub timeframe: i64,
+    pub comparision_type: u8,
     pub closed: bool,
 }
 
@@ -91,16 +93,17 @@ impl From<identity_registry::Model> for IdentityRegistryAccount {
     }
 }
 
-impl From<policy_engine_account::Model> for PolicyAccount {
-    fn from(policy: policy_engine_account::Model) -> Self {
+impl From<policy_account::Model> for PolicyAccount {
+    fn from(policy: policy_account::Model) -> Self {
         PolicyAccount {
             address: bs58::encode(policy.clone().id).into_string(),
-            mint: bs58::encode(policy.asset_mint).into_string(),
-            authority: bs58::encode(policy.authority).into_string(),
-            delegate: bs58::encode(policy.delegate).into_string(),
-            max_time_frame: policy.max_time_frame,
+            mint: bs58::encode(policy.clone().id).into_string(),
             version: policy.version as u8,
-            closed: policy.closed,
+            limit: policy.total_limit.to_u64().unwrap_or_default(),
+            policy: policy.policy_type.to_string(),
+            timeframe: policy.timeframe,
+            comparision_type: policy.comparsion_type as u8,
+            closed: false,
         }
     }
 }

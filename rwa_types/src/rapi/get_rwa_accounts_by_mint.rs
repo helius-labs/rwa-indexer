@@ -1,4 +1,4 @@
-use crate::dao::{asset_controller, data_registry, identity_registry, policy_engine_account};
+use crate::dao::{asset_controller, data_registry, identity_registry, policy_account};
 use sea_orm::{ColumnTrait, DatabaseConnection, DbErr, EntityTrait, QueryFilter};
 
 use super::{
@@ -42,9 +42,9 @@ pub async fn get_identity_registry(
 pub async fn get_policy_engine(
     db: &DatabaseConnection,
     id: Vec<u8>,
-) -> Result<Option<policy_engine_account::Model>, DbErr> {
-    let account = policy_engine_account::Entity::find()
-        .filter(policy_engine_account::Column::AssetMint.eq(id.clone()))
+) -> Result<Option<policy_account::Model>, DbErr> {
+    let account = policy_account::Entity::find()
+        .filter(policy_account::Column::AssetMint.eq(id.clone()))
         .one(db)
         .await?;
     Ok(account)
