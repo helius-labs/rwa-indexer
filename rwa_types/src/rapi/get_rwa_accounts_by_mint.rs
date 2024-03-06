@@ -3,7 +3,7 @@ use sea_orm::{ColumnTrait, DatabaseConnection, DbErr, EntityTrait, QueryFilter};
 
 use super::{
     AssetControllerAccount, DataRegistryAccount, FullAccount, IdentityRegistryAccount,
-    PolicyEngineAccount,
+    PolicyAccount,
 };
 
 pub async fn get_rwa_accounts_by_mint_controller(
@@ -78,6 +78,6 @@ pub async fn get_rwa_accounts_by_mint(
             .and_then(|opt| opt.map(IdentityRegistryAccount::from)),
         policy_engine: policy_engine
             .ok()
-            .and_then(|opt| opt.map(PolicyEngineAccount::from)),
+            .and_then(|opt| opt.map(PolicyAccount::from)),
     })
 }

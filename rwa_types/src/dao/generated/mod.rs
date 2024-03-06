@@ -2,16 +2,11 @@
 
 pub mod prelude;
 
-pub mod approval_account;
 pub mod asset_controller;
 pub mod data_account;
 pub mod data_registry;
 pub mod identity_account;
-pub mod identity_approval;
 pub mod identity_registry;
-pub mod policy_engine_account;
+pub mod policy_account;
 pub mod sea_orm_active_enums;
 pub mod tracker_account;
-pub mod transaction_amount_limit;
-pub mod transaction_amount_velocity;
-pub mod transaction_count_velocity;

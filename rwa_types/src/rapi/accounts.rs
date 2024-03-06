@@ -32,7 +32,7 @@ pub struct IdentityRegistryAccount {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct PolicyEngineAccount {
+pub struct PolicyAccount {
     pub address: String,
     pub mint: String,
     pub authority: String,
@@ -51,7 +51,7 @@ pub struct FullAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub identity_registry: Option<IdentityRegistryAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub policy_engine: Option<PolicyEngineAccount>,
+    pub policy_engine: Option<PolicyAccount>,
 }
 
 impl From<asset_controller::Model> for AssetControllerAccount {
@@ -91,9 +91,9 @@ impl From<identity_registry::Model> for IdentityRegistryAccount {
     }
 }
 
-impl From<policy_engine_account::Model> for PolicyEngineAccount {
+impl From<policy_engine_account::Model> for PolicyAccount {
     fn from(policy: policy_engine_account::Model) -> Self {
-        PolicyEngineAccount {
+        PolicyAccount {
             address: bs58::encode(policy.clone().id).into_string(),
             mint: bs58::encode(policy.asset_mint).into_string(),
             authority: bs58::encode(policy.authority).into_string(),
