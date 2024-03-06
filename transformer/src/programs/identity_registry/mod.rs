@@ -4,7 +4,7 @@ use crate::{
     programs::ProgramParseResult,
 };
 use borsh::BorshDeserialize;
-use identity_registry::{state::IdentityAccount, IdentityRegistry};
+use identity_registry::{state::IdentityAccount, IdentityRegistryAccount};
 use plerkle_serialization::AccountInfo;
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
@@ -18,7 +18,7 @@ pubkeys!(
 pub struct IdentityRegistryParser;
 
 pub enum IdentityRegistryProgram {
-    IdentityRegistry(IdentityRegistry),
+    IdentityRegistry(IdentityRegistryAccount),
     IdentityAccount(IdentityAccount),
     EmptyAccount,
 }
@@ -59,18 +59,19 @@ impl ProgramParser for IdentityRegistryParser {
             return Ok(Box::new(IdentityRegistryProgram::EmptyAccount));
         };
 
-        let identity_registry_descriminator = get_discriminator("IdentityRegistry");
+        let identity_registry_descriminator = get_discriminator("IdentityRegistryAccount");
         let identity_account_descriminator = get_discriminator("IdentityAccount");
         let account_type_discriminator = &account_data[..8];
         let account_info_without_discriminator = &account_data[8..];
 
         let account = if account_type_discriminator == identity_registry_descriminator {
-            let account = IdentityRegistry::try_from_slice(account_info_without_discriminator)
-                .map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Identity Registry Unpack Failed".to_string(),
-                    )
-                })?;
+            let account =
+                IdentityRegistryAccount::try_from_slice(account_info_without_discriminator)
+                    .map_err(|_| {
+                        TransformerError::CustomDeserializationError(
+                            "Identity Registry Unpack Failed".to_string(),
+                        )
+                    })?;
 
             IdentityRegistryProgram::IdentityRegistry(account)
         } else if account_type_discriminator == identity_account_descriminator {

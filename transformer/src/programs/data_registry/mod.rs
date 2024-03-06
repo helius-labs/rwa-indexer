@@ -4,7 +4,7 @@ use crate::{
     programs::ProgramParseResult,
 };
 use borsh::BorshDeserialize;
-use data_registry::{state::DataAccount, DataRegistry};
+use data_registry::{state::DataAccount, DataRegistryAccount};
 use plerkle_serialization::AccountInfo;
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
@@ -19,7 +19,7 @@ pub struct DataRegistryParser;
 
 pub enum DataRegistryProgram {
     DataAccount(DataAccount),
-    DataRegistry(DataRegistry),
+    DataRegistry(DataRegistryAccount),
     EmptyAccount,
 }
 
@@ -59,18 +59,18 @@ impl ProgramParser for DataRegistryParser {
             return Ok(Box::new(DataRegistryProgram::EmptyAccount));
         };
 
-        let data_registry_discriminator = get_discriminator("DataRegistry");
+        let data_registry_discriminator = get_discriminator("DataRegistryAccount");
         let data_account_discriminator = get_discriminator("DataAccount");
         let account_type_discriminator = &account_data[..8];
         let account_info_without_discriminator = &account_data[8..];
 
         let account = if account_type_discriminator == data_registry_discriminator {
-            let account = DataRegistry::try_from_slice(account_info_without_discriminator)
+            let account = DataRegistryAccount::try_from_slice(account_info_without_discriminator)
                 .map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Data Registry Unpack Failed".to_string(),
-                    )
-                })?;
+                TransformerError::CustomDeserializationError(
+                    "Data Registry Unpack Failed".to_string(),
+                )
+            })?;
 
             DataRegistryProgram::DataRegistry(account)
         } else if account_type_discriminator == data_account_discriminator {

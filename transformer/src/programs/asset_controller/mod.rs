@@ -3,7 +3,7 @@ use crate::{
     program_handler::{ParseResult, ProgramParser},
     programs::ProgramParseResult,
 };
-use asset_controller::state::{AssetControllerAccount, TrackerAccount, TransactionApprovalAccount};
+use asset_controller::state::{AssetControllerAccount, TrackerAccount};
 use borsh::BorshDeserialize;
 use plerkle_serialization::AccountInfo;
 use solana_sdk::{pubkey::Pubkey, pubkeys};
@@ -19,8 +19,7 @@ pub struct AssetControllerParser;
 
 pub enum AssetControllerProgram {
     AssetControllerAccount(AssetControllerAccount),
-    TransactionApprovalAccount(TransactionApprovalAccount),
-    TrackerAccount(TrackerAccount),
+    TrackerAccount(Box<TrackerAccount>),
     EmptyAccount,
 }
 
@@ -62,7 +61,6 @@ impl ProgramParser for AssetControllerParser {
         };
 
         let asset_controller_discriminator = get_discriminator("AssetControllerAccount");
-        let transaction_approval_discriminator = get_discriminator("TransactionApprovalAccount");
         let tracker_account_discriminator = get_discriminator("TrackerAccount");
         let account_type_discriminator = &account_data[..8];
         let account_info_without_discriminator = &account_data[8..];
@@ -76,17 +74,8 @@ impl ProgramParser for AssetControllerParser {
                         )
                     })?,
             )
-        } else if account_type_discriminator == transaction_approval_discriminator {
-            AssetControllerProgram::TransactionApprovalAccount(
-                TransactionApprovalAccount::try_from_slice(account_info_without_discriminator)
-                    .map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Failed to deserialize TransactionApprovalAccount".to_string(),
-                        )
-                    })?,
-            )
         } else if account_type_discriminator == tracker_account_discriminator {
-            AssetControllerProgram::TrackerAccount(
+            AssetControllerProgram::TrackerAccount(Box::new(
                 TrackerAccount::try_from_slice(account_info_without_discriminator).map_err(
                     |_| {
                         TransformerError::CustomDeserializationError(
@@ -94,7 +83,7 @@ impl ProgramParser for AssetControllerParser {
                         )
                     },
                 )?,
-            )
+            ))
         } else {
             return Err(TransformerError::UnknownAccountDiscriminator);
         };
