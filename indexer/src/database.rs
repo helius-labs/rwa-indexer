@@ -23,11 +23,10 @@ pub async fn setup_database(config: IndexerConfig) -> PgPool {
         std::time::Duration::from_millis(500),
     );
 
-    let pool = PgPoolOptions::new()
+    PgPoolOptions::new()
         .min_connections(BARE_MINIMUM_CONNECTIONS)
         .max_connections(max)
         .connect_with(options)
         .await
-        .unwrap();
-    pool
+        .unwrap()
 }
