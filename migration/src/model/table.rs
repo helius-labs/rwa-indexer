@@ -34,33 +34,17 @@ pub enum IdentityRegistryVersion {
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
-pub enum PolicyEngineAccountVersion {
+pub enum PolicyAccountVersion {
     V0,
     V1,
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
-pub enum IdentityApprovalVersion {
-    V0,
-    V1,
-}
-
-#[derive(Iden, Debug, PartialEq, Sequence)]
-pub enum TransactionAmountVelocityVersion {
-    V0,
-    V1,
-}
-
-#[derive(Iden, Debug, PartialEq, Sequence)]
-pub enum TransactionAmountLimitVersion {
-    V0,
-    V1,
-}
-
-#[derive(Iden, Debug, PartialEq, Sequence)]
-pub enum TransactionCountVelocityVersion {
-    V0,
-    V1,
+pub enum PolicyAccountType {
+    IdentityApproval,
+    TransactionAmountLimit,
+    TransactionAmountVelocity,
+    TransactionCountVelocity,
 }
 
 #[derive(Copy, Clone, Iden)]
@@ -74,21 +58,6 @@ pub enum AssetController {
     Authority,
     Delegate,
     Closed,
-    SlotUpdated,
-    CreatedAt,
-    LastUpdatedAt,
-}
-
-#[derive(Copy, Clone, Iden)]
-pub enum ApprovalAccount {
-    #[iden = "approval_account"]
-    Table,
-    Id,
-    AssetMint,
-    FromTokenAccount,
-    ToTokenAccount,
-    Amount,
-    ExpirySlot,
     SlotUpdated,
     CreatedAt,
     LastUpdatedAt,
@@ -172,83 +141,20 @@ pub enum IdentityAccount {
 }
 
 #[derive(Copy, Clone, Iden)]
-pub enum PolicyEngineAccount {
-    PolicyEngineAccountVersion,
-    #[iden = "policy_engine_account"]
+pub enum PolicyAccount {
+    PolicyAccountVersion,
+    PolicyAccountType,
+    #[iden = "policy_account"]
     Table,
     Id,
     AssetMint,
-    Authority,
-    Delegate,
-    MaxTimeFrame,
-    Polices,
+    PolicyType,
+    IdentityLevels,
+    ComparsionType,
     Version,
+    TotalLimit,
+    Timeframe,
     Closed,
-    SlotUpdated,
-    CreatedAt,
-    LastUpdatedAt,
-}
-
-#[derive(Copy, Clone, Iden)]
-pub enum IdentityApproval {
-    IdentityApprovalVersion,
-    #[iden = "identity_approval"]
-    Table,
-    Id,
-    PolicyEngine,
-    IdentityLevels,
-    ComparsionType,
-    Version,
-    SlotUpdated,
-    CreatedAt,
-    LastUpdatedAt,
-}
-
-#[derive(Copy, Clone, Iden)]
-pub enum TransactionAmountVelocity {
-    TransactionAmountVelocityVersion,
-    #[iden = "transaction_amount_velocity"]
-    Table,
-    Id,
-    PolicyEngine,
-    TotalLimit,
-    TimeFrame,
-    IdentityLevels,
-    ComparsionType,
-    Version,
-    SlotUpdated,
-    CreatedAt,
-    LastUpdatedAt,
-}
-
-#[derive(Copy, Clone, Iden)]
-pub enum TransactionAmountLimit {
-    TransactionAmountLimitVersion,
-    #[iden = "transaction_amount_limit"]
-    Table,
-    Id,
-    PolicyEngine,
-    TotalLimit,
-    IdentityLevels,
-    ComparsionType,
-    Version,
-    SlotUpdated,
-    CreatedAt,
-    LastUpdatedAt,
-}
-
-#[derive(Copy, Clone, Iden)]
-pub enum TransactionCountVelocity {
-    TransactionCountVelocityVersion,
-    #[iden = "transaction_count_velocity"]
-    Table,
-    Id,
-    PolicyEngine,
-    TotalLimit,
-    TimeFrame,
-    IdentityLevels,
-    ComparsionType,
-    Version,
     SlotUpdated,
     CreatedAt,
     LastUpdatedAt,

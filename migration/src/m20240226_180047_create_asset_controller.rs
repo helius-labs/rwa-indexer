@@ -4,9 +4,7 @@ use sea_orm_migration::{
     sea_orm::{ConnectionTrait, DatabaseBackend, Statement},
 };
 
-use crate::model::table::{
-    ApprovalAccount, AssetController, AssetControllerVersion, TrackerAccount,
-};
+use crate::model::table::{AssetController, AssetControllerVersion, TrackerAccount};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -73,58 +71,6 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(ApprovalAccount::Table)
-                    .if_not_exists()
-                    .col(
-                        ColumnDef::new(ApprovalAccount::Id)
-                            .binary()
-                            .not_null()
-                            .primary_key(),
-                    )
-                    .col(
-                        ColumnDef::new(ApprovalAccount::AssetMint)
-                            .binary()
-                            .not_null(),
-                    )
-                    .col(ColumnDef::new(ApprovalAccount::FromTokenAccount).binary())
-                    .col(ColumnDef::new(ApprovalAccount::ToTokenAccount).binary())
-                    .col(
-                        ColumnDef::new(ApprovalAccount::ExpirySlot)
-                            .big_integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(ApprovalAccount::SlotUpdated)
-                            .big_integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(ApprovalAccount::CreatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .col(
-                        ColumnDef::new(ApprovalAccount::LastUpdatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                "ALTER TABLE approval_account ADD COLUMN amount uint64_t;".to_string(),
-            ))
-            .await?;
-
-        manager
-            .create_table(
-                Table::create()
                     .table(TrackerAccount::Table)
                     .if_not_exists()
                     .col(
@@ -168,9 +114,6 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
             .drop_table(Table::drop().table(AssetController::Table).to_owned())
-            .await?;
-        manager
-            .drop_table(Table::drop().table(ApprovalAccount::Table).to_owned())
             .await?;
 
         manager

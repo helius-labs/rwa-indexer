@@ -1,9 +1,8 @@
 use sea_orm_migration::prelude::*;
 
 use crate::model::table::{
-    ApprovalAccount, AssetController, DataAccount, DataRegistry, IdentityAccount, IdentityApproval,
-    IdentityRegistry, PolicyEngineAccount, TrackerAccount, TransactionAmountLimit,
-    TransactionAmountVelocity, TransactionCountVelocity,
+    AssetController, DataAccount, DataRegistry, IdentityAccount, IdentityRegistry, PolicyAccount,
+    TrackerAccount,
 };
 
 #[derive(DeriveMigrationName)]
@@ -12,16 +11,6 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        manager
-            .create_index(
-                Index::create()
-                    .name("idx_approval_account_mint")
-                    .col(ApprovalAccount::AssetMint)
-                    .table(ApprovalAccount::Table)
-                    .to_owned(),
-            )
-            .await?;
-
         manager
             .create_index(
                 Index::create()
@@ -66,8 +55,8 @@ impl MigrationTrait for Migration {
             .create_index(
                 Index::create()
                     .name("idx_policy_engine_mint")
-                    .col(PolicyEngineAccount::AssetMint)
-                    .table(PolicyEngineAccount::Table)
+                    .col(PolicyAccount::AssetMint)
+                    .table(PolicyAccount::Table)
                     .to_owned(),
             )
             .await?;
@@ -92,59 +81,10 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager
-            .create_index(
-                Index::create()
-                    .name("idx_identity_approval_policy_engine")
-                    .col(IdentityApproval::PolicyEngine)
-                    .table(IdentityApproval::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_index(
-                Index::create()
-                    .name("idx_transaction_amount_limit_policy_engine")
-                    .col(TransactionAmountLimit::PolicyEngine)
-                    .table(TransactionAmountLimit::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_index(
-                Index::create()
-                    .name("idx_transaction_amount_velocity_policy_engine")
-                    .col(TransactionAmountVelocity::PolicyEngine)
-                    .table(TransactionAmountVelocity::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_index(
-                Index::create()
-                    .name("idx_transaction_count_velocity_policy_engine")
-                    .col(TransactionCountVelocity::PolicyEngine)
-                    .table(TransactionCountVelocity::Table)
-                    .to_owned(),
-            )
-            .await?;
-
         Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        manager
-            .drop_index(
-                Index::drop()
-                    .name("idx_approval_account_mint")
-                    .table(ApprovalAccount::Table)
-                    .to_owned(),
-            )
-            .await?;
-
         manager
             .drop_index(
                 Index::drop()
@@ -185,7 +125,7 @@ impl MigrationTrait for Migration {
             .drop_index(
                 Index::drop()
                     .name("idx_policy_engine_mint")
-                    .table(PolicyEngineAccount::Table)
+                    .table(PolicyAccount::Table)
                     .to_owned(),
             )
             .await?;
@@ -204,42 +144,6 @@ impl MigrationTrait for Migration {
                 Index::drop()
                     .name("idx_identity_account_registry")
                     .table(IdentityAccount::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .drop_index(
-                Index::drop()
-                    .name("idx_identity_approval_policy_engine")
-                    .table(IdentityApproval::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .drop_index(
-                Index::drop()
-                    .name("idx_transaction_amount_limit_policy_engine")
-                    .table(TransactionAmountLimit::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .drop_index(
-                Index::drop()
-                    .name("idx_transaction_amount_velocity_policy_engine")
-                    .table(TransactionAmountVelocity::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .drop_index(
-                Index::drop()
-                    .name("idx_transaction_count_velocity_policy_engine")
-                    .table(TransactionCountVelocity::Table)
                     .to_owned(),
             )
             .await?;

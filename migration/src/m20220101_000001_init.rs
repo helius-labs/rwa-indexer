@@ -6,11 +6,8 @@ use sea_orm_migration::{
 
 use crate::model::table::{
     AssetController, AssetControllerVersion, DataAccount, DataAccountType, DataRegistry,
-    DataRegistryVersion, IdentityAccount, IdentityAccountVersion, IdentityApproval,
-    IdentityApprovalVersion, IdentityRegistry, IdentityRegistryVersion, PolicyEngineAccount,
-    PolicyEngineAccountVersion, TransactionAmountLimit, TransactionAmountLimitVersion,
-    TransactionAmountVelocity, TransactionAmountVelocityVersion, TransactionCountVelocity,
-    TransactionCountVelocityVersion,
+    DataRegistryVersion, IdentityAccount, IdentityAccountVersion, IdentityRegistry,
+    IdentityRegistryVersion, PolicyAccount, PolicyAccountType, PolicyAccountVersion,
 };
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -92,11 +89,8 @@ impl MigrationTrait for Migration {
         manager
             .create_type(
                 Type::create()
-                    .as_enum(PolicyEngineAccount::PolicyEngineAccountVersion)
-                    .values(vec![
-                        PolicyEngineAccountVersion::V0,
-                        PolicyEngineAccountVersion::V1,
-                    ])
+                    .as_enum(PolicyAccount::PolicyAccountVersion)
+                    .values(vec![PolicyAccountVersion::V0, PolicyAccountVersion::V1])
                     .to_owned(),
             )
             .await?;
@@ -104,46 +98,12 @@ impl MigrationTrait for Migration {
         manager
             .create_type(
                 Type::create()
-                    .as_enum(IdentityApproval::IdentityApprovalVersion)
+                    .as_enum(PolicyAccount::PolicyAccountType)
                     .values(vec![
-                        IdentityApprovalVersion::V0,
-                        IdentityApprovalVersion::V1,
-                    ])
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_type(
-                Type::create()
-                    .as_enum(TransactionAmountVelocity::TransactionAmountVelocityVersion)
-                    .values(vec![
-                        TransactionAmountVelocityVersion::V0,
-                        TransactionAmountVelocityVersion::V1,
-                    ])
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_type(
-                Type::create()
-                    .as_enum(TransactionAmountLimit::TransactionAmountLimitVersion)
-                    .values(vec![
-                        TransactionAmountLimitVersion::V0,
-                        TransactionAmountLimitVersion::V1,
-                    ])
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_type(
-                Type::create()
-                    .as_enum(TransactionCountVelocity::TransactionCountVelocityVersion)
-                    .values(vec![
-                        TransactionCountVelocityVersion::V0,
-                        TransactionCountVelocityVersion::V1,
+                        PolicyAccountType::IdentityApproval,
+                        PolicyAccountType::TransactionAmountLimit,
+                        PolicyAccountType::TransactionAmountVelocity,
+                        PolicyAccountType::TransactionCountVelocity,
                     ])
                     .to_owned(),
             )

@@ -4,11 +4,7 @@ use sea_orm_migration::{
     sea_orm::{ConnectionTrait, DatabaseBackend, Statement},
 };
 
-use crate::model::table::{
-    IdentityApproval, IdentityApprovalVersion, PolicyEngineAccount, PolicyEngineAccountVersion,
-    TransactionAmountLimit, TransactionAmountLimitVersion, TransactionAmountVelocity,
-    TransactionAmountVelocityVersion, TransactionCountVelocity, TransactionCountVelocityVersion,
-};
+use crate::model::table::{PolicyAccount, PolicyAccountType, PolicyAccountVersion};
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -18,167 +14,56 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(PolicyEngineAccount::Table)
+                    .table(PolicyAccount::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(PolicyEngineAccount::Id)
+                        ColumnDef::new(PolicyAccount::Id)
                             .binary()
                             .not_null()
                             .primary_key(),
                     )
+                    .col(ColumnDef::new(PolicyAccount::AssetMint).binary().not_null())
                     .col(
-                        ColumnDef::new(PolicyEngineAccount::AssetMint)
-                            .binary()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(PolicyEngineAccount::Authority)
-                            .binary()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(PolicyEngineAccount::Delegate)
-                            .binary()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(PolicyEngineAccount::MaxTimeFrame)
-                            .big_integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(PolicyEngineAccount::Version)
+                        ColumnDef::new(PolicyAccount::Version)
                             .enumeration(
-                                PolicyEngineAccount::PolicyEngineAccountVersion,
-                                all::<PolicyEngineAccountVersion>().collect::<Vec<_>>(),
+                                PolicyAccount::PolicyAccountVersion,
+                                all::<PolicyAccountVersion>().collect::<Vec<_>>(),
                             )
                             .not_null(),
                     )
                     .col(
-                        ColumnDef::new(PolicyEngineAccount::Closed)
-                            .boolean()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(PolicyEngineAccount::SlotUpdated)
+                        ColumnDef::new(PolicyAccount::Timeframe)
                             .big_integer()
                             .not_null(),
                     )
                     .col(
-                        ColumnDef::new(PolicyEngineAccount::CreatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .col(
-                        ColumnDef::new(PolicyEngineAccount::LastUpdatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_table(
-                Table::create()
-                    .table(IdentityApproval::Table)
-                    .if_not_exists()
-                    .col(
-                        ColumnDef::new(IdentityApproval::Id)
-                            .binary()
-                            .not_null()
-                            .primary_key(),
-                    )
-                    .col(
-                        ColumnDef::new(IdentityApproval::PolicyEngine)
-                            .binary()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(IdentityApproval::ComparsionType)
-                            .integer()
-                            .not_null(),
-                    )
-                    .col(ColumnDef::new(IdentityApproval::IdentityLevels).json_binary())
-                    .col(
-                        ColumnDef::new(IdentityApproval::Version)
+                        ColumnDef::new(PolicyAccount::PolicyType)
                             .enumeration(
-                                IdentityApproval::IdentityApprovalVersion,
-                                all::<IdentityApprovalVersion>().collect::<Vec<_>>(),
+                                PolicyAccount::PolicyAccountType,
+                                all::<PolicyAccountType>().collect::<Vec<_>>(),
                             )
                             .not_null(),
                     )
                     .col(
-                        ColumnDef::new(IdentityApproval::SlotUpdated)
+                        ColumnDef::new(PolicyAccount::ComparsionType)
+                            .integer()
+                            .not_null(),
+                    )
+                    .col(ColumnDef::new(PolicyAccount::IdentityLevels).json_binary())
+                    .col(ColumnDef::new(PolicyAccount::Closed).boolean().not_null())
+                    .col(
+                        ColumnDef::new(PolicyAccount::SlotUpdated)
                             .big_integer()
                             .not_null(),
                     )
                     .col(
-                        ColumnDef::new(IdentityApproval::CreatedAt)
+                        ColumnDef::new(PolicyAccount::CreatedAt)
                             .timestamp()
                             .not_null()
                             .default(Expr::current_timestamp()),
                     )
                     .col(
-                        ColumnDef::new(IdentityApproval::LastUpdatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_table(
-                Table::create()
-                    .table(TransactionAmountVelocity::Table)
-                    .if_not_exists()
-                    .col(
-                        ColumnDef::new(TransactionAmountVelocity::Id)
-                            .binary()
-                            .not_null()
-                            .primary_key(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountVelocity::PolicyEngine)
-                            .binary()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountVelocity::TimeFrame)
-                            .integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountVelocity::ComparsionType)
-                            .integer()
-                            .not_null(),
-                    )
-                    .col(ColumnDef::new(IdentityApproval::IdentityLevels).json_binary())
-                    .col(
-                        ColumnDef::new(TransactionAmountVelocity::Version)
-                            .enumeration(
-                                TransactionAmountVelocity::TransactionAmountVelocityVersion,
-                                all::<TransactionAmountVelocityVersion>().collect::<Vec<_>>(),
-                            )
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountVelocity::SlotUpdated)
-                            .big_integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountVelocity::CreatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountVelocity::LastUpdatedAt)
+                        ColumnDef::new(PolicyAccount::LastUpdatedAt)
                             .timestamp()
                             .not_null()
                             .default(Expr::current_timestamp()),
@@ -191,132 +76,7 @@ impl MigrationTrait for Migration {
             .get_connection()
             .execute(Statement::from_string(
                 DatabaseBackend::Postgres,
-                r#"ALTER TABLE transaction_amount_velocity ADD COLUMN total_limit "uint64_t" not null;"#
-                    .to_string(),
-            ))
-            .await?;
-
-        manager
-            .create_table(
-                Table::create()
-                    .table(TransactionAmountLimit::Table)
-                    .if_not_exists()
-                    .col(
-                        ColumnDef::new(TransactionAmountLimit::Id)
-                            .binary()
-                            .not_null()
-                            .primary_key(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountLimit::PolicyEngine)
-                            .binary()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountLimit::ComparsionType)
-                            .integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountLimit::Version)
-                            .enumeration(
-                                TransactionAmountLimit::TransactionAmountLimitVersion,
-                                all::<TransactionAmountLimitVersion>().collect::<Vec<_>>(),
-                            )
-                            .not_null(),
-                    )
-                    .col(ColumnDef::new(IdentityApproval::IdentityLevels).json_binary())
-                    .col(
-                        ColumnDef::new(TransactionAmountLimit::SlotUpdated)
-                            .big_integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountLimit::CreatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionAmountLimit::LastUpdatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                r#"ALTER TABLE transaction_amount_limit ADD COLUMN total_limit uint64_t not null;"#
-                    .to_string(),
-            ))
-            .await?;
-
-        manager
-            .create_table(
-                Table::create()
-                    .table(TransactionCountVelocity::Table)
-                    .if_not_exists()
-                    .col(
-                        ColumnDef::new(TransactionCountVelocity::Id)
-                            .binary()
-                            .not_null()
-                            .primary_key(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionCountVelocity::PolicyEngine)
-                            .binary()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionCountVelocity::TimeFrame)
-                            .big_integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionCountVelocity::ComparsionType)
-                            .integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionCountVelocity::Version)
-                            .enumeration(
-                                TransactionCountVelocity::TransactionCountVelocityVersion,
-                                all::<TransactionCountVelocityVersion>().collect::<Vec<_>>(),
-                            )
-                            .not_null(),
-                    )
-                    .col(ColumnDef::new(IdentityApproval::IdentityLevels).json_binary())
-                    .col(
-                        ColumnDef::new(TransactionCountVelocity::SlotUpdated)
-                            .big_integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionCountVelocity::CreatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .col(
-                        ColumnDef::new(TransactionCountVelocity::LastUpdatedAt)
-                            .timestamp()
-                            .not_null()
-                            .default(Expr::current_timestamp()),
-                    )
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .get_connection()
-            .execute(Statement::from_string(
-                DatabaseBackend::Postgres,
-                r#"ALTER TABLE transaction_count_velocity ADD COLUMN total_limit "uint64_t" not null;"#
+                r#"ALTER TABLE policy_account ADD COLUMN total_limit "uint64_t" not null;"#
                     .to_string(),
             ))
             .await?;
@@ -325,32 +85,7 @@ impl MigrationTrait for Migration {
     }
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(PolicyEngineAccount::Table).to_owned())
-            .await?;
-
-        manager
-            .drop_table(Table::drop().table(IdentityApproval::Table).to_owned())
-            .await?;
-        manager
-            .drop_table(
-                Table::drop()
-                    .table(TransactionAmountVelocity::Table)
-                    .to_owned(),
-            )
-            .await?;
-        manager
-            .drop_table(
-                Table::drop()
-                    .table(TransactionAmountLimit::Table)
-                    .to_owned(),
-            )
-            .await?;
-        manager
-            .drop_table(
-                Table::drop()
-                    .table(TransactionCountVelocity::Table)
-                    .to_owned(),
-            )
+            .drop_table(Table::drop().table(PolicyAccount::Table).to_owned())
             .await?;
 
         Ok(())
