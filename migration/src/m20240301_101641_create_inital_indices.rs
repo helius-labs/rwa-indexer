@@ -2,7 +2,7 @@ use sea_orm_migration::prelude::*;
 
 use crate::model::table::{
     AssetController, DataAccount, DataRegistry, IdentityAccount, IdentityRegistry, PolicyAccount,
-    TrackerAccount,
+    PolicyEngine, TrackerAccount,
 };
 
 #[derive(DeriveMigrationName)]
@@ -55,8 +55,8 @@ impl MigrationTrait for Migration {
             .create_index(
                 Index::create()
                     .name("idx_policy_engine_mint")
-                    .col(PolicyAccount::AssetMint)
-                    .table(PolicyAccount::Table)
+                    .col(PolicyEngine::AssetMint)
+                    .table(PolicyEngine::Table)
                     .to_owned(),
             )
             .await?;
@@ -77,6 +77,16 @@ impl MigrationTrait for Migration {
                     .name("idx_identity_account_registry")
                     .col(IdentityAccount::IdentityRegistry)
                     .table(IdentityAccount::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .create_index(
+                Index::create()
+                    .name("idx_policy_engine")
+                    .col(PolicyAccount::PolicyEngine)
+                    .table(PolicyAccount::Table)
                     .to_owned(),
             )
             .await?;

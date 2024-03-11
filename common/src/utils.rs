@@ -20,16 +20,14 @@ pub fn get_relative_git_path(file_path: &str) -> PathBuf {
 }
 
 pub const ASSET_CONTROLLER_PROGRAM_ID: Pubkey =
-    pubkey!("DtrBDukceZpUnWmeNzqtoBQPdXW8p9xmWYG1z7qMt8qG");
+    pubkey!("acpcFrzEYKjVLvZGWueTV8vyDjhu3oKC7sN38QELLan");
 
-pub const DATA_REGISTRY_PROGRAM_ID: Pubkey =
-    pubkey!("8WRaNVNMDqdwADbKYj7fBd47i2e5SFMSEs8TrA2Vd5io");
+pub const DATA_REGISTRY_PROGRAM_ID: Pubkey = pubkey!("dataeP5X1e7XsWN1ovDSEDP5cqaEUnKBmHE5iZhXPVw");
 
 pub const IDENTIFIER_REGISTRY_PROGRAM_ID: Pubkey =
-    pubkey!("qDnvwpjBYjH1vs1N1CSdbVkEkePp2acL7TphAYZDeoV");
+    pubkey!("idtynCMYbdisCTv4FrCWPSQboZb1uM4TV2cPi79yxQf");
 
-pub const POLICY_ENGINE_PROGRAM_ID: Pubkey =
-    pubkey!("6FcM5R2KcdUGcdLunzLm3XLRFr7FiF6Hdz3EWni8YPa2");
+pub const POLICY_ENGINE_PROGRAM_ID: Pubkey = pubkey!("po1cPf1eyUJJPqULw4so3T4JU9pdFn83CDyuLEKFAau");
 
 pub fn find_asset_controller_pda(mint: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
     solana_program::pubkey::Pubkey::find_program_address(

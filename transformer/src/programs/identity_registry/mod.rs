@@ -12,7 +12,7 @@ use super::get_discriminator;
 
 pubkeys!(
     identity_registry_program_id,
-    "qDnvwpjBYjH1vs1N1CSdbVkEkePp2acL7TphAYZDeoV"
+    "idtynCMYbdisCTv4FrCWPSQboZb1uM4TV2cPi79yxQf"
 );
 
 pub struct IdentityRegistryParser;

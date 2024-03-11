@@ -12,7 +12,7 @@ use super::get_discriminator;
 
 pubkeys!(
     data_registry_program_id,
-    "8WRaNVNMDqdwADbKYj7fBd47i2e5SFMSEs8TrA2Vd5io"
+    "dataeP5X1e7XsWN1ovDSEDP5cqaEUnKBmHE5iZhXPVw"
 );
 
 pub struct DataRegistryParser;

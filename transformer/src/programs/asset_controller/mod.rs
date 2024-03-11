@@ -12,7 +12,7 @@ use super::get_discriminator;
 
 pubkeys!(
     asset_controller_program_id,
-    "DtrBDukceZpUnWmeNzqtoBQPdXW8p9xmWYG1z7qMt8qG"
+    "acpcFrzEYKjVLvZGWueTV8vyDjhu3oKC7sN38QELLan"
 );
 
 pub struct AssetControllerParser;

@@ -4,13 +4,63 @@ use sea_orm_migration::{
     sea_orm::{ConnectionTrait, DatabaseBackend, Statement},
 };
 
-use crate::model::table::{PolicyAccount, PolicyAccountType, PolicyAccountVersion};
+use crate::model::table::{PolicyAccount, PolicyAccountType, PolicyEngine, PolicyEngineVersion};
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .create_table(
+                Table::create()
+                    .table(PolicyEngine::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(PolicyEngine::Id)
+                            .binary()
+                            .not_null()
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(PolicyEngine::AssetMint).binary().not_null())
+                    .col(ColumnDef::new(PolicyEngine::Authority).binary().not_null())
+                    .col(ColumnDef::new(PolicyEngine::Delegate).binary().not_null())
+                    .col(
+                        ColumnDef::new(PolicyEngine::MaxTimeframe)
+                            .big_integer()
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(PolicyEngine::Version)
+                            .enumeration(
+                                PolicyEngine::PolicyEngineVersion,
+                                all::<PolicyEngineVersion>().collect::<Vec<_>>(),
+                            )
+                            .not_null(),
+                    )
+                    .col(ColumnDef::new(PolicyEngine::Policies).json_binary())
+                    .col(ColumnDef::new(PolicyEngine::Closed).boolean().not_null())
+                    .col(
+                        ColumnDef::new(PolicyEngine::SlotUpdated)
+                            .big_integer()
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(PolicyEngine::CreatedAt)
+                            .timestamp()
+                            .not_null()
+                            .default(Expr::current_timestamp()),
+                    )
+                    .col(
+                        ColumnDef::new(PolicyEngine::LastUpdatedAt)
+                            .timestamp()
+                            .not_null()
+                            .default(Expr::current_timestamp()),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
         manager
             .create_table(
                 Table::create()
@@ -22,26 +72,9 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(PolicyAccount::AssetMint).binary().not_null())
                     .col(
-                        ColumnDef::new(PolicyAccount::Version)
-                            .enumeration(
-                                PolicyAccount::PolicyAccountVersion,
-                                all::<PolicyAccountVersion>().collect::<Vec<_>>(),
-                            )
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(PolicyAccount::Timeframe)
-                            .big_integer()
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(PolicyAccount::PolicyType)
-                            .enumeration(
-                                PolicyAccount::PolicyAccountType,
-                                all::<PolicyAccountType>().collect::<Vec<_>>(),
-                            )
+                        ColumnDef::new(PolicyAccount::PolicyEngine)
+                            .binary()
                             .not_null(),
                     )
                     .col(
@@ -50,7 +83,15 @@ impl MigrationTrait for Migration {
                             .not_null(),
                     )
                     .col(ColumnDef::new(PolicyAccount::IdentityLevels).json_binary())
-                    .col(ColumnDef::new(PolicyAccount::Closed).boolean().not_null())
+                    .col(ColumnDef::new(PolicyAccount::Timeframe).big_integer())
+                    .col(
+                        ColumnDef::new(PolicyAccount::PolicyType)
+                            .enumeration(
+                                PolicyAccount::PolicyAccountType,
+                                all::<PolicyAccountType>().collect::<Vec<_>>(),
+                            )
+                            .not_null(),
+                    )
                     .col(
                         ColumnDef::new(PolicyAccount::SlotUpdated)
                             .big_integer()
@@ -76,8 +117,7 @@ impl MigrationTrait for Migration {
             .get_connection()
             .execute(Statement::from_string(
                 DatabaseBackend::Postgres,
-                r#"ALTER TABLE policy_account ADD COLUMN total_limit "uint64_t" not null;"#
-                    .to_string(),
+                r#"ALTER TABLE policy_account ADD COLUMN total_limit "uint64_t";"#.to_string(),
             ))
             .await?;
 

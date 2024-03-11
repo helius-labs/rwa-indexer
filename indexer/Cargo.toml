@@ -26,6 +26,7 @@ log = { workspace = true }
 num-traits = { workspace = true }
 plerkle_messenger = { workspace = true }
 plerkle_serialization = { workspace = true }
+policy_engine = {workspace = true}
 rand = { workspace = true }
 redis = { workspace = true }
 regex = { workspace = true }

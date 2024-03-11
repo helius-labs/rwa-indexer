@@ -34,7 +34,7 @@ pub enum IdentityRegistryVersion {
 }
 
 #[derive(Iden, Debug, PartialEq, Sequence)]
-pub enum PolicyAccountVersion {
+pub enum PolicyEngineVersion {
     V0,
     V1,
 }
@@ -141,20 +141,35 @@ pub enum IdentityAccount {
 }
 
 #[derive(Copy, Clone, Iden)]
+pub enum PolicyEngine {
+    PolicyEngineVersion,
+    #[iden = "policy_engine"]
+    Table,
+    Id,
+    AssetMint,
+    Authority,
+    Delegate,
+    MaxTimeframe,
+    Policies,
+    Version,
+    Closed,
+    SlotUpdated,
+    CreatedAt,
+    LastUpdatedAt,
+}
+
+#[derive(Copy, Clone, Iden)]
 pub enum PolicyAccount {
-    PolicyAccountVersion,
     PolicyAccountType,
     #[iden = "policy_account"]
     Table,
     Id,
-    AssetMint,
+    PolicyEngine,
     PolicyType,
     IdentityLevels,
     ComparsionType,
-    Version,
     TotalLimit,
     Timeframe,
-    Closed,
     SlotUpdated,
     CreatedAt,
     LastUpdatedAt,

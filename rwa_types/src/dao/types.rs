@@ -1,6 +1,6 @@
 use super::sea_orm_active_enums::{
     AssetControllerVersion, DataAccountType, DataRegistryVersion, IdentityAccountVersion,
-    IdentityRegistryVersion, PolicyAccountType, PolicyAccountVersion,
+    IdentityRegistryVersion, PolicyAccountType, PolicyEngineVersion,
 };
 use data_registry::state::DataAccountType as ProgramDataAccountType;
 use policy_engine::Policy;
@@ -52,11 +52,11 @@ impl From<ProgramDataAccountType> for DataAccountType {
     }
 }
 
-impl From<u8> for PolicyAccountVersion {
+impl From<u8> for PolicyEngineVersion {
     fn from(version: u8) -> Self {
         match version {
-            1 => PolicyAccountVersion::V1,
-            _ => PolicyAccountVersion::V1,
+            1 => PolicyEngineVersion::V1,
+            _ => PolicyEngineVersion::V1,
         }
     }
 }

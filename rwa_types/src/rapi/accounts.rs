@@ -1,8 +1,7 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::dao::{asset_controller, data_registry, identity_registry, policy_account};
-use num_traits::ToPrimitive;
+use crate::dao::{asset_controller, data_registry, identity_registry, policy_engine};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct AssetControllerAccount {
@@ -33,14 +32,13 @@ pub struct IdentityRegistryAccount {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct PolicyAccount {
+pub struct PolicyEngine {
     pub address: String,
     pub mint: String,
+    pub authority: String,
+    pub delegate: String,
+    pub policies: Vec<String>,
     pub version: u8,
-    pub policy: String,
-    pub limit: u64,
-    pub timeframe: i64,
-    pub comparision_type: u8,
     pub closed: bool,
 }
 
@@ -53,7 +51,7 @@ pub struct FullAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub identity_registry: Option<IdentityRegistryAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub policy_engine: Option<PolicyAccount>,
+    pub policy_engine: Option<PolicyEngine>,
 }
 
 impl From<asset_controller::Model> for AssetControllerAccount {
@@ -93,17 +91,40 @@ impl From<identity_registry::Model> for IdentityRegistryAccount {
     }
 }
 
-impl From<policy_account::Model> for PolicyAccount {
-    fn from(policy: policy_account::Model) -> Self {
-        PolicyAccount {
+impl From<policy_engine::Model> for PolicyEngine {
+    fn from(policy: policy_engine::Model) -> Self {
+        let policies: Vec<String> = policy.policies.clone().map_or(Vec::new(), |json_value| {
+            if let sea_orm::JsonValue::Object(mut obj) = json_value {
+                if let Some(sea_orm::JsonValue::Array(arr)) = obj.remove("policies") {
+                    arr.into_iter()
+                        .map(|item| {
+                            if let sea_orm::JsonValue::Array(numbers) = item {
+                                let pubkey_bytes: Vec<u8> = numbers
+                                    .into_iter()
+                                    .filter_map(|n| n.as_u64().map(|num| num as u8))
+                                    .collect();
+                                bs58::encode(pubkey_bytes).into_string()
+                            } else {
+                                String::new()
+                            }
+                        })
+                        .collect()
+                } else {
+                    Vec::new()
+                }
+            } else {
+                Vec::new()
+            }
+        });
+
+        PolicyEngine {
             address: bs58::encode(policy.clone().id).into_string(),
-            mint: bs58::encode(policy.clone().id).into_string(),
+            mint: bs58::encode(policy.asset_mint).into_string(),
+            authority: bs58::encode(policy.authority).into_string(),
+            delegate: bs58::encode(policy.delegate).into_string(),
+            policies,
             version: policy.version as u8,
-            limit: policy.total_limit.to_u64().unwrap_or_default(),
-            policy: policy.policy_type.to_string(),
-            timeframe: policy.timeframe,
-            comparision_type: policy.comparsion_type as u8,
-            closed: false,
+            closed: policy.closed,
         }
     }
 }
