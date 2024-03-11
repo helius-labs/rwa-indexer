@@ -7,7 +7,7 @@ use sea_orm_migration::{
 use crate::model::table::{
     AssetController, AssetControllerVersion, DataAccount, DataAccountType, DataRegistry,
     DataRegistryVersion, IdentityAccount, IdentityAccountVersion, IdentityRegistry,
-    IdentityRegistryVersion, PolicyAccount, PolicyAccountType, PolicyAccountVersion,
+    IdentityRegistryVersion, PolicyAccount, PolicyAccountType, PolicyEngine, PolicyEngineVersion,
 };
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -89,8 +89,8 @@ impl MigrationTrait for Migration {
         manager
             .create_type(
                 Type::create()
-                    .as_enum(PolicyAccount::PolicyAccountVersion)
-                    .values(vec![PolicyAccountVersion::V0, PolicyAccountVersion::V1])
+                    .as_enum(PolicyEngine::PolicyEngineVersion)
+                    .values(vec![PolicyEngineVersion::V0, PolicyEngineVersion::V1])
                     .to_owned(),
             )
             .await?;
