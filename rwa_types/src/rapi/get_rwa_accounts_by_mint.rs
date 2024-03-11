@@ -1,9 +1,8 @@
-use crate::dao::{asset_controller, data_registry, identity_registry, policy_account};
+use crate::dao::{asset_controller, data_registry, identity_registry, policy_engine};
 use sea_orm::{ColumnTrait, DatabaseConnection, DbErr, EntityTrait, QueryFilter};
 
 use super::{
-    AssetControllerAccount, DataRegistryAccount, FullAccount, IdentityRegistryAccount,
-    PolicyAccount,
+    AssetControllerAccount, DataRegistryAccount, FullAccount, IdentityRegistryAccount, PolicyEngine,
 };
 
 pub async fn get_rwa_accounts_by_mint_controller(
@@ -42,9 +41,9 @@ pub async fn get_identity_registry(
 pub async fn get_policy_engine(
     db: &DatabaseConnection,
     id: Vec<u8>,
-) -> Result<Option<policy_account::Model>, DbErr> {
-    let account = policy_account::Entity::find()
-        .filter(policy_account::Column::AssetMint.eq(id.clone()))
+) -> Result<Option<policy_engine::Model>, DbErr> {
+    let account = policy_engine::Entity::find()
+        .filter(policy_engine::Column::AssetMint.eq(id.clone()))
         .one(db)
         .await?;
     Ok(account)
@@ -78,6 +77,6 @@ pub async fn get_rwa_accounts_by_mint(
             .and_then(|opt| opt.map(IdentityRegistryAccount::from)),
         policy_engine: policy_engine
             .ok()
-            .and_then(|opt| opt.map(PolicyAccount::from)),
+            .and_then(|opt| opt.map(PolicyEngine::from)),
     })
 }
