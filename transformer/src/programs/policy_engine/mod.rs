@@ -5,19 +5,20 @@ use crate::{
 };
 use borsh::BorshDeserialize;
 use plerkle_serialization::AccountInfo;
-use policy_engine::state::PolicyAccount;
+use policy_engine::{state::PolicyAccount, PolicyEngineAccount};
 use solana_sdk::{pubkey::Pubkey, pubkeys};
 
 use super::get_discriminator;
 
 pubkeys!(
     policy_engine_program_id,
-    "6FcM5R2KcdUGcdLunzLm3XLRFr7FiF6Hdz3EWni8YPa2"
+    "po1cPf1eyUJJPqULw4so3T4JU9pdFn83CDyuLEKFAau"
 );
 
 pub struct PolicyEngineParser;
 
 pub enum PolicyEngineProgram {
+    PolicyEngine(Box<PolicyEngineAccount>),
     PolicyAccount(Box<PolicyAccount>),
     EmptyAccount,
 }
@@ -58,15 +59,24 @@ impl ProgramParser for PolicyEngineParser {
             return Ok(Box::new(PolicyEngineProgram::EmptyAccount));
         };
 
-        let policy_engine_descriminator = get_discriminator("PolicyAccount");
+        let policy_engine_descriminator = get_discriminator("PolicyEngineAccount");
+        let policy_account_descriminator = get_discriminator("PolicyAccount");
         let account_type_discriminator = &account_data[..8];
         let account_info_without_discriminator = &account_data[8..];
 
         let account = if account_type_discriminator == policy_engine_descriminator {
+            let account = PolicyEngineAccount::try_from_slice(account_info_without_discriminator)
+                .map_err(|_| {
+                TransformerError::CustomDeserializationError(
+                    "Policy Engine Unpack Failed".to_string(),
+                )
+            })?;
+            PolicyEngineProgram::PolicyEngine(Box::new(account))
+        } else if account_type_discriminator == policy_account_descriminator {
             let account = PolicyAccount::try_from_slice(account_info_without_discriminator)
                 .map_err(|_| {
                     TransformerError::CustomDeserializationError(
-                        "Policy Engine Account Unpack Failed".to_string(),
+                        "Policy Account Unpack Failed".to_string(),
                     )
                 })?;
             PolicyEngineProgram::PolicyAccount(Box::new(account))
