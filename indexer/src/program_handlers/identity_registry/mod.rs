@@ -62,7 +62,7 @@ pub async fn handle_identity_registry_program_account<'a, 'b, 'c>(
             let active_model = identity_account::ActiveModel {
                 id: Set(key_bytes.clone()),
                 owner: Set(ia.owner.to_bytes().to_vec()),
-                identity_registry: Set(ia.registry.to_bytes().to_vec()),
+                identity_registry: Set(ia.identity_registry.to_bytes().to_vec()),
                 version: Set(IdentityAccountVersion::from(ia.version)),
                 levels: Set(Some(json!({ "levels": ia.levels }))),
                 slot_updated: Set(account_update.slot() as i64),
