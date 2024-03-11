@@ -400,7 +400,7 @@ async fn index_token_mint(setup: &TestSetup, mint: Pubkey) {
     let asset_controller_pda = utils::find_asset_controller_pda(&mint).0;
     let data_pda = utils::find_data_registry_pda(&mint).0;
     let identifier_pda = utils::find_identifier_registry_pda(&mint).0;
-    // let policy_pda = utils::find_policy_engine_pda(&mint).0;
+    let policy_pda = utils::find_policy_engine_pda(&mint).0;
 
     if let Ok(account_bytes) =
         cached_fetch_account_with_error_handling(setup, asset_controller_pda, slot).await
@@ -419,11 +419,11 @@ async fn index_token_mint(setup: &TestSetup, mint: Pubkey) {
         index_account_bytes(setup, account_bytes).await;
     }
 
-    // if let Ok(account_bytes) =
-    //     cached_fetch_account_with_error_handling(setup, policy_pda, slot).await
-    // {
-    //     index_account_bytes(setup, account_bytes).await;
-    // }
+    if let Ok(account_bytes) =
+        cached_fetch_account_with_error_handling(setup, policy_pda, slot).await
+    {
+        index_account_bytes(setup, account_bytes).await;
+    }
 }
 
 pub fn trim_test_name(name: &str) -> String {

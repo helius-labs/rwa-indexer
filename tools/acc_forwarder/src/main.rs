@@ -5,6 +5,10 @@ use {
     },
     anyhow::Context,
     clap::Parser,
+    common::utils::{
+        find_asset_controller_pda, find_data_registry_pda, find_identifier_registry_pda,
+        find_policy_engine_pda,
+    },
     figment::{map, value::Value},
     futures::stream::StreamExt,
     log::warn,
@@ -122,10 +126,10 @@ async fn main() -> anyhow::Result<()> {
             let mint =
                 Pubkey::from_str(&mint).with_context(|| format!("failed to parse mint {mint}"))?;
 
-            let asset_controller_pda = acc_forwarder::find_asset_controller_pda(&mint).0;
-            let data_pda = acc_forwarder::find_data_registry_pda(&mint).0;
-            let identifier_pda = acc_forwarder::find_identifier_registry_pda(&mint).0;
-            let policy_pda = acc_forwarder::find_policy_engine_pda(&mint).0;
+            let asset_controller_pda = find_asset_controller_pda(&mint).0;
+            let data_pda = find_data_registry_pda(&mint).0;
+            let identifier_pda = find_identifier_registry_pda(&mint).0;
+            let policy_pda = find_policy_engine_pda(&mint).0;
 
             fetch_and_send_account(mint, &client, &messenger, false).await?;
             for pubkey in &[asset_controller_pda, data_pda, identifier_pda, policy_pda] {

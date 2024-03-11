@@ -15,13 +15,13 @@ async fn test_get_rwa_accounts_by_mint() {
     let setup = TestSetup::new(name.clone()).await;
 
     let seeds: Vec<SeedEvent> = vec![seed_token_mint(
-        "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe",
+        "Ea1yrC1xRXd6tWcHL4yhGRB31j6jTwdeqd3e9LHaYUwj",
     )];
     apply_migrations_and_delete_data(setup.db.clone()).await;
     index_seed_events(&setup, seeds.iter().collect_vec()).await;
     let request: api::GetRwaAccountsByMint = serde_json::from_str(
         r#"{
-        "id": "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe"
+        "id": "Ea1yrC1xRXd6tWcHL4yhGRB31j6jTwdeqd3e9LHaYUwj"
     }"#,
     )
     .unwrap();

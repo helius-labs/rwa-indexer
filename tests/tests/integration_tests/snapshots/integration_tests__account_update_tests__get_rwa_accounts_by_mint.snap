@@ -1,27 +1,48 @@
 ---
 source: tests/tests/integration_tests/account_update_tests.rs
+assertion_line: 33
 expression: response
 ---
 {
   "asset_controller": {
-    "address": "ApZaoG36eYaKuzHHMLDdQMBE8WBwjGKjQ7HwAQUi73TD",
-    "mint": "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe",
-    "authority": "9xakHBpJ8gQTi4NYKyLhUm786e4sEeWxMQPz2ph7SPLt",
-    "delegate": "ApZaoG36eYaKuzHHMLDdQMBE8WBwjGKjQ7HwAQUi73TD",
+    "address": "8wpRqZ5993g1ubygtgUgh3bw8VEfp4LV7VuofL51pa4S",
+    "mint": "Ea1yrC1xRXd6tWcHL4yhGRB31j6jTwdeqd3e9LHaYUwj",
+    "authority": "dqci6TGXWGTki8DTQ1QcJ3qg4fPbxUzj6MwJBGjuhHX",
+    "delegate": "8wpRqZ5993g1ubygtgUgh3bw8VEfp4LV7VuofL51pa4S",
     "version": 1,
     "closed": false
   },
   "data_registry": {
-    "address": "JAsaNchAr87pwHCyccUa5CZyjx6swD1GWmBnYXUK3zVn",
-    "mint": "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe",
+    "address": "ApfwesFjbtvR3qTXmRM8hGyQ9HiufRPsQQt5wUH9e8Uw",
+    "mint": "Ea1yrC1xRXd6tWcHL4yhGRB31j6jTwdeqd3e9LHaYUwj",
     "version": 1,
     "closed": false
   },
   "identity_registry": {
-    "address": "E2XnGXCFEugYLPRvfiVD8EQ8QHLFcymqA9dP4vBboWwP",
-    "mint": "mZ7ZGCykdQgvDsmDuXFsrCcFS77NAQxQZGhHNWQYvPe",
-    "authority": "9xakHBpJ8gQTi4NYKyLhUm786e4sEeWxMQPz2ph7SPLt",
-    "delegate": "E2XnGXCFEugYLPRvfiVD8EQ8QHLFcymqA9dP4vBboWwP",
+    "address": "8tAP4FDpFehdQVmwTqCoYtDehG863TJqnTKZYz6UPR6m",
+    "mint": "Ea1yrC1xRXd6tWcHL4yhGRB31j6jTwdeqd3e9LHaYUwj",
+    "authority": "dqci6TGXWGTki8DTQ1QcJ3qg4fPbxUzj6MwJBGjuhHX",
+    "delegate": "8tAP4FDpFehdQVmwTqCoYtDehG863TJqnTKZYz6UPR6m",
+    "version": 1,
+    "closed": false
+  },
+  "policy_engine": {
+    "address": "EVfbhfNeH9TqcBVbr9TEGpQvKgR51vJSLiwZXvLoR7DG",
+    "mint": "Ea1yrC1xRXd6tWcHL4yhGRB31j6jTwdeqd3e9LHaYUwj",
+    "authority": "dqci6TGXWGTki8DTQ1QcJ3qg4fPbxUzj6MwJBGjuhHX",
+    "delegate": "EVfbhfNeH9TqcBVbr9TEGpQvKgR51vJSLiwZXvLoR7DG",
+    "policies": [
+      "9ouBMZVbQeVLjpi6oewvM4aEc16cuQCB1mmwgrkVjCbL",
+      "DMX8iMbWnw82gSDjMQ9fVYNNYFj4f3ceKd7vHi3x3eMG",
+      "Cg5wADuxpSVQdAxhMwdCzDQzPwVLa6aTu3uG3eNTD2CY",
+      "5ynb2SyJSxF17DRq8vvDSQVV1xKx6g8B5LsnzUwEnKRe",
+      "11111111111111111111111111111111",
+      "11111111111111111111111111111111",
+      "11111111111111111111111111111111",
+      "11111111111111111111111111111111",
+      "11111111111111111111111111111111",
+      "11111111111111111111111111111111"
+    ],
     "version": 1,
     "closed": false
   }

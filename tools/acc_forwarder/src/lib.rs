@@ -1,6 +1,5 @@
 use common::utils::{
-    ASSET_CONTROLLER_PROGRAM_ID, DATA_REGISTRY_PROGRAM_ID, IDENTIFIER_REGISTRY_PROGRAM_ID,
-    POLICY_ENGINE_PROGRAM_ID,
+    DATA_REGISTRY_PROGRAM_ID, IDENTIFIER_REGISTRY_PROGRAM_ID, POLICY_ENGINE_PROGRAM_ID,
 };
 use solana_client::{
     rpc_config::RpcProgramAccountsConfig,
@@ -21,7 +20,7 @@ use {
         nonblocking::rpc_client::RpcClient, rpc_config::RpcAccountInfoConfig,
         rpc_request::RpcRequest, rpc_response::Response as RpcResponse,
     },
-    solana_program::{pubkey, pubkey::Pubkey},
+    solana_program::pubkey::Pubkey,
     solana_sdk::{
         account::Account,
         commitment_config::{CommitmentConfig, CommitmentLevel},
@@ -37,48 +36,6 @@ use {
 };
 
 const REGISTRY_OFFSET: usize = 9;
-
-pub fn find_asset_controller_pda(mint: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
-    solana_program::pubkey::Pubkey::find_program_address(
-        &[mint.as_ref()],
-        &ASSET_CONTROLLER_PROGRAM_ID,
-    )
-}
-
-pub fn find_tracker_account_pda(mint: &Pubkey, owner: &Pubkey) -> (Pubkey, u8) {
-    Pubkey::find_program_address(
-        &[mint.as_ref(), owner.as_ref()],
-        &ASSET_CONTROLLER_PROGRAM_ID,
-    )
-}
-
-pub fn find_data_registry_pda(data_type: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
-    solana_program::pubkey::Pubkey::find_program_address(
-        &[data_type.as_ref()],
-        &DATA_REGISTRY_PROGRAM_ID,
-    )
-}
-
-pub fn find_identifier_registry_pda(identifier: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
-    solana_program::pubkey::Pubkey::find_program_address(
-        &[identifier.as_ref()],
-        &IDENTIFIER_REGISTRY_PROGRAM_ID,
-    )
-}
-
-pub fn find_identity_account_pda(asset_mint: &Pubkey, owner: &Pubkey) -> (Pubkey, u8) {
-    Pubkey::find_program_address(
-        &[asset_mint.as_ref(), owner.as_ref()],
-        &IDENTIFIER_REGISTRY_PROGRAM_ID,
-    )
-}
-
-pub fn find_policy_engine_pda(policy: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
-    solana_program::pubkey::Pubkey::find_program_address(
-        &[policy.as_ref()],
-        &POLICY_ENGINE_PROGRAM_ID,
-    )
-}
 
 pub async fn fetch_and_send_program_accounts(
     program: Pubkey,
