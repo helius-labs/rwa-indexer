@@ -4,16 +4,16 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
-#[sea_orm(
-    rs_type = "String",
-    db_type = "Enum",
-    enum_name = "asset_controller_version"
-)]
-pub enum AssetControllerVersion {
-    #[sea_orm(string_value = "v0")]
-    V0,
-    #[sea_orm(string_value = "v1")]
-    V1,
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "data_account_type")]
+pub enum DataAccountType {
+    #[sea_orm(string_value = "legal")]
+    Legal,
+    #[sea_orm(string_value = "miscellaneous")]
+    Miscellaneous,
+    #[sea_orm(string_value = "tax")]
+    Tax,
+    #[sea_orm(string_value = "title")]
+    Title,
 }
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
 #[sea_orm(
@@ -30,30 +30,6 @@ pub enum PolicyAccountType {
     TransactionAmountVelocity,
     #[sea_orm(string_value = "transaction_count_velocity")]
     TransactionCountVelocity,
-}
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
-#[sea_orm(
-    rs_type = "String",
-    db_type = "Enum",
-    enum_name = "policy_account_version"
-)]
-pub enum PolicyAccountVersion {
-    #[sea_orm(string_value = "v0")]
-    V0,
-    #[sea_orm(string_value = "v1")]
-    V1,
-}
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
-#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "data_account_type")]
-pub enum DataAccountType {
-    #[sea_orm(string_value = "legal")]
-    Legal,
-    #[sea_orm(string_value = "miscellaneous")]
-    Miscellaneous,
-    #[sea_orm(string_value = "tax")]
-    Tax,
-    #[sea_orm(string_value = "title")]
-    Title,
 }
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
 #[sea_orm(
@@ -83,9 +59,33 @@ pub enum IdentityRegistryVersion {
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
+    enum_name = "asset_controller_version"
+)]
+pub enum AssetControllerVersion {
+    #[sea_orm(string_value = "v0")]
+    V0,
+    #[sea_orm(string_value = "v1")]
+    V1,
+}
+#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(
+    rs_type = "String",
+    db_type = "Enum",
     enum_name = "identity_account_version"
 )]
 pub enum IdentityAccountVersion {
+    #[sea_orm(string_value = "v0")]
+    V0,
+    #[sea_orm(string_value = "v1")]
+    V1,
+}
+#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(
+    rs_type = "String",
+    db_type = "Enum",
+    enum_name = "policy_engine_version"
+)]
+pub enum PolicyEngineVersion {
     #[sea_orm(string_value = "v0")]
     V0,
     #[sea_orm(string_value = "v1")]

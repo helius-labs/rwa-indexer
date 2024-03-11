@@ -8,5 +8,6 @@ pub mod data_registry;
 pub mod identity_account;
 pub mod identity_registry;
 pub mod policy_account;
+pub mod policy_engine;
 pub mod sea_orm_active_enums;
 pub mod tracker_account;
