@@ -1,7 +1,7 @@
 use {
     acc_forwarder::{
         fetch_and_send_account, fetch_and_send_data_accounts, fetch_and_send_identity_accounts,
-        fetch_and_send_policy_engine_accounts, read_lines,
+        fetch_and_send_policy_accounts, read_lines,
     },
     anyhow::Context,
     clap::Parser,
@@ -123,25 +123,17 @@ async fn main() -> anyhow::Result<()> {
                 Pubkey::from_str(&mint).with_context(|| format!("failed to parse mint {mint}"))?;
 
             let asset_controller_pda = acc_forwarder::find_asset_controller_pda(&mint).0;
-            let transaction_approval_pda =
-                acc_forwarder::find_transaction_approval_account_pda(&mint).0;
             let data_pda = acc_forwarder::find_data_registry_pda(&mint).0;
             let identifier_pda = acc_forwarder::find_identifier_registry_pda(&mint).0;
             let policy_pda = acc_forwarder::find_policy_engine_pda(&mint).0;
 
             fetch_and_send_account(mint, &client, &messenger, false).await?;
-            for pubkey in &[
-                asset_controller_pda,
-                transaction_approval_pda,
-                data_pda,
-                identifier_pda,
-                policy_pda,
-            ] {
+            for pubkey in &[asset_controller_pda, data_pda, identifier_pda, policy_pda] {
                 fetch_and_send_account(*pubkey, &client, &messenger, true).await?;
             }
             fetch_and_send_data_accounts(data_pda, &client, &messenger).await?;
             fetch_and_send_identity_accounts(identifier_pda, &client, &messenger).await?;
-            fetch_and_send_policy_engine_accounts(policy_pda, &client, &messenger).await?;
+            fetch_and_send_policy_accounts(policy_pda, &client, &messenger).await?;
         }
     }
 
@@ -149,9 +141,7 @@ async fn main() -> anyhow::Result<()> {
 }
 
 pub fn init_logger() {
-    let env_filter = env::var("RUST_LOG")
-        .or::<Result<String, ()>>(Ok("info".to_string()))
-        .unwrap();
+    let env_filter = env::var("RUST_LOG").unwrap_or("info".to_string());
     let t = tracing_subscriber::fmt().with_env_filter(env_filter);
     t.event_format(fmt::format::json()).init();
 }

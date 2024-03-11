@@ -1,3 +1,7 @@
+use common::utils::{
+    ASSET_CONTROLLER_PROGRAM_ID, DATA_REGISTRY_PROGRAM_ID, IDENTIFIER_REGISTRY_PROGRAM_ID,
+    POLICY_ENGINE_PROGRAM_ID,
+};
 use solana_client::{
     rpc_config::RpcProgramAccountsConfig,
     rpc_filter::{Memcmp, RpcFilterType},
@@ -34,18 +38,6 @@ use {
 
 const REGISTRY_OFFSET: usize = 9;
 
-pub const ASSET_CONTROLLER_PROGRAM_ID: Pubkey =
-    pubkey!("DtrBDukceZpUnWmeNzqtoBQPdXW8p9xmWYG1z7qMt8qG");
-
-pub const DATA_REGISTRY_PROGRAM_ID: Pubkey =
-    pubkey!("8WRaNVNMDqdwADbKYj7fBd47i2e5SFMSEs8TrA2Vd5io");
-
-pub const IDENTIFIER_REGISTRY_PROGRAM_ID: Pubkey =
-    pubkey!("qDnvwpjBYjH1vs1N1CSdbVkEkePp2acL7TphAYZDeoV");
-
-pub const POLICY_ENGINE_PROGRAM_ID: Pubkey =
-    pubkey!("6FcM5R2KcdUGcdLunzLm3XLRFr7FiF6Hdz3EWni8YPa2");
-
 pub fn find_asset_controller_pda(mint: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
     solana_program::pubkey::Pubkey::find_program_address(
         &[mint.as_ref()],
@@ -58,13 +50,6 @@ pub fn find_tracker_account_pda(mint: &Pubkey, owner: &Pubkey) -> (Pubkey, u8) {
         &[mint.as_ref(), owner.as_ref()],
         &ASSET_CONTROLLER_PROGRAM_ID,
     )
-}
-
-pub fn find_transaction_approval_account_pda(mint: &Pubkey) -> (Pubkey, u8) {
-    let seed_str = "transaction-approval-account";
-    let seed = seed_str.as_bytes();
-
-    Pubkey::find_program_address(&[seed, mint.as_ref()], &ASSET_CONTROLLER_PROGRAM_ID)
 }
 
 pub fn find_data_registry_pda(data_type: &Pubkey) -> (solana_program::pubkey::Pubkey, u8) {
@@ -164,7 +149,7 @@ pub async fn fetch_and_send_data_accounts(
     client: &RpcClient,
     messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
 ) -> anyhow::Result<()> {
-    const DATA_ACCOUNT_LEN: u64 = 105;
+    const DATA_ACCOUNT_LEN: u64 = 337;
 
     fetch_and_send_program_accounts(
         DATA_REGISTRY_PROGRAM_ID,
@@ -182,22 +167,19 @@ pub async fn fetch_and_send_data_accounts(
     Ok(())
 }
 
-pub async fn fetch_and_send_policy_engine_accounts(
+pub async fn fetch_and_send_policy_accounts(
     registry: Pubkey,
     client: &RpcClient,
     messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
 ) -> anyhow::Result<()> {
-    const IDENTITY_APPROVAL_LEN: u64 = 20;
-    const TRANSACATION_AMOUNT_LIMIT_LEN: u64 = 28;
-    const TRANSACATION_AMOUNT_VELOCITY_LEN: u64 = 36;
-    const TRANSACATION_COUNT_VELOCITY_LEN: u64 = 36;
+    const POLICY_ACCOUNT_LEN: u64 = 69;
 
     fetch_and_send_program_accounts(
         POLICY_ENGINE_PROGRAM_ID,
         client,
         messenger,
         vec![
-            RpcFilterType::DataSize(IDENTITY_APPROVAL_LEN),
+            RpcFilterType::DataSize(POLICY_ACCOUNT_LEN),
             RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
                 REGISTRY_OFFSET,
                 registry.to_bytes().to_vec(),
@@ -205,47 +187,6 @@ pub async fn fetch_and_send_policy_engine_accounts(
         ],
     )
     .await?;
-    fetch_and_send_program_accounts(
-        POLICY_ENGINE_PROGRAM_ID,
-        client,
-        messenger,
-        vec![
-            RpcFilterType::DataSize(TRANSACATION_AMOUNT_VELOCITY_LEN),
-            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
-                REGISTRY_OFFSET,
-                registry.to_bytes().to_vec(),
-            )),
-        ],
-    )
-    .await?;
-    fetch_and_send_program_accounts(
-        POLICY_ENGINE_PROGRAM_ID,
-        client,
-        messenger,
-        vec![
-            RpcFilterType::DataSize(TRANSACATION_COUNT_VELOCITY_LEN),
-            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
-                REGISTRY_OFFSET,
-                registry.to_bytes().to_vec(),
-            )),
-        ],
-    )
-    .await?;
-
-    fetch_and_send_program_accounts(
-        POLICY_ENGINE_PROGRAM_ID,
-        client,
-        messenger,
-        vec![
-            RpcFilterType::DataSize(TRANSACATION_AMOUNT_LIMIT_LEN),
-            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
-                REGISTRY_OFFSET,
-                registry.to_bytes().to_vec(),
-            )),
-        ],
-    )
-    .await?;
-
     Ok(())
 }
 
