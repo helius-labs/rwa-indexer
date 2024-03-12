@@ -63,10 +63,10 @@ impl ProgramParser for DataRegistryParser {
         let data_account_discriminator = get_discriminator("DataAccount");
         let account_type_discriminator = &account_data[..8];
         let account_info_without_discriminator = &account_data[8..];
+        let mut cursor = std::io::Cursor::new(account_info_without_discriminator);
 
         let account = if account_type_discriminator == data_registry_discriminator {
-            let account = DataRegistryAccount::try_from_slice(account_info_without_discriminator)
-                .map_err(|_| {
+            let account = DataRegistryAccount::deserialize(cursor.get_mut()).map_err(|_| {
                 TransformerError::CustomDeserializationError(
                     "Data Registry Unpack Failed".to_string(),
                 )
@@ -74,12 +74,11 @@ impl ProgramParser for DataRegistryParser {
 
             DataRegistryProgram::DataRegistry(account)
         } else if account_type_discriminator == data_account_discriminator {
-            let account =
-                DataAccount::try_from_slice(account_info_without_discriminator).map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Data Account Unpack Failed".to_string(),
-                    )
-                })?;
+            let account = DataAccount::deserialize(cursor.get_mut()).map_err(|_| {
+                TransformerError::CustomDeserializationError(
+                    "Data Account Unpack Failed".to_string(),
+                )
+            })?;
 
             DataRegistryProgram::DataAccount(account)
         } else {

@@ -64,25 +64,23 @@ impl ProgramParser for AssetControllerParser {
         let tracker_account_discriminator = get_discriminator("TrackerAccount");
         let account_type_discriminator = &account_data[..8];
         let account_info_without_discriminator = &account_data[8..];
+        let mut cursor = std::io::Cursor::new(account_info_without_discriminator);
 
         let account = if account_type_discriminator == asset_controller_discriminator {
             AssetControllerProgram::AssetControllerAccount(
-                AssetControllerAccount::try_from_slice(account_info_without_discriminator)
-                    .map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Failed to deserialize AssetControllerAccount".to_string(),
-                        )
-                    })?,
+                AssetControllerAccount::deserialize(cursor.get_mut()).map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Failed to deserialize AssetControllerAccount".to_string(),
+                    )
+                })?,
             )
         } else if account_type_discriminator == tracker_account_discriminator {
             AssetControllerProgram::TrackerAccount(Box::new(
-                TrackerAccount::try_from_slice(account_info_without_discriminator).map_err(
-                    |_| {
-                        TransformerError::CustomDeserializationError(
-                            "Failed to deserialize TrackerAccount".to_string(),
-                        )
-                    },
-                )?,
+                TrackerAccount::deserialize(cursor.get_mut()).map_err(|_| {
+                    TransformerError::CustomDeserializationError(
+                        "Failed to deserialize TrackerAccount".to_string(),
+                    )
+                })?,
             ))
         } else {
             return Err(TransformerError::UnknownAccountDiscriminator);

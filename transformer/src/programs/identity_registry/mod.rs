@@ -63,24 +63,22 @@ impl ProgramParser for IdentityRegistryParser {
         let identity_account_descriminator = get_discriminator("IdentityAccount");
         let account_type_discriminator = &account_data[..8];
         let account_info_without_discriminator = &account_data[8..];
+        let mut cursor = std::io::Cursor::new(account_info_without_discriminator);
 
         let account = if account_type_discriminator == identity_registry_descriminator {
-            let account =
-                IdentityRegistryAccount::try_from_slice(account_info_without_discriminator)
-                    .map_err(|_| {
-                        TransformerError::CustomDeserializationError(
-                            "Identity Registry Unpack Failed".to_string(),
-                        )
-                    })?;
+            let account = IdentityRegistryAccount::deserialize(cursor.get_mut()).map_err(|_| {
+                TransformerError::CustomDeserializationError(
+                    "Identity Registry Unpack Failed".to_string(),
+                )
+            })?;
 
             IdentityRegistryProgram::IdentityRegistry(account)
         } else if account_type_discriminator == identity_account_descriminator {
-            let account = IdentityAccount::try_from_slice(account_info_without_discriminator)
-                .map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Identity Account Unpack Failed".to_string(),
-                    )
-                })?;
+            let account = IdentityAccount::deserialize(cursor.get_mut()).map_err(|_| {
+                TransformerError::CustomDeserializationError(
+                    "Identity Account Unpack Failed".to_string(),
+                )
+            })?;
 
             IdentityRegistryProgram::IdentityAccount(account)
         } else {

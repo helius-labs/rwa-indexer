@@ -63,22 +63,21 @@ impl ProgramParser for PolicyEngineParser {
         let policy_account_descriminator = get_discriminator("PolicyAccount");
         let account_type_discriminator = &account_data[..8];
         let account_info_without_discriminator = &account_data[8..];
+        let mut cursor = std::io::Cursor::new(account_info_without_discriminator);
 
         let account = if account_type_discriminator == policy_engine_descriminator {
-            let account = PolicyEngineAccount::try_from_slice(account_info_without_discriminator)
-                .map_err(|_| {
+            let account = PolicyEngineAccount::deserialize(cursor.get_mut()).map_err(|_| {
                 TransformerError::CustomDeserializationError(
                     "Policy Engine Unpack Failed".to_string(),
                 )
             })?;
             PolicyEngineProgram::PolicyEngine(Box::new(account))
         } else if account_type_discriminator == policy_account_descriminator {
-            let account = PolicyAccount::try_from_slice(account_info_without_discriminator)
-                .map_err(|_| {
-                    TransformerError::CustomDeserializationError(
-                        "Policy Account Unpack Failed".to_string(),
-                    )
-                })?;
+            let account = PolicyAccount::deserialize(cursor.get_mut()).map_err(|_| {
+                TransformerError::CustomDeserializationError(
+                    "Policy Account Unpack Failed".to_string(),
+                )
+            })?;
             PolicyEngineProgram::PolicyAccount(Box::new(account))
         } else {
             return Err(TransformerError::UnknownAccountDiscriminator);
