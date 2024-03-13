@@ -94,7 +94,7 @@ pub async fn fetch_and_send_identity_accounts(
     Ok(())
 }
 
-pub async fn fetch_and_send_asset_controller_accounts(
+pub async fn fetch_and_send_tracker_account(
     registry: Pubkey,
     client: &RpcClient,
     messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,

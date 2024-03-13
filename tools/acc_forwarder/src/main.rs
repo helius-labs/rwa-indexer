@@ -1,8 +1,7 @@
 use {
     acc_forwarder::{
-        fetch_and_send_account, fetch_and_send_asset_controller_accounts,
-        fetch_and_send_data_accounts, fetch_and_send_identity_accounts,
-        fetch_and_send_policy_accounts, read_lines,
+        fetch_and_send_account, fetch_and_send_data_accounts, fetch_and_send_identity_accounts,
+        fetch_and_send_policy_accounts, fetch_and_send_tracker_account, read_lines,
     },
     anyhow::Context,
     clap::Parser,
@@ -136,8 +135,7 @@ async fn main() -> anyhow::Result<()> {
             for pubkey in &[asset_controller_pda, data_pda, identifier_pda, policy_pda] {
                 fetch_and_send_account(*pubkey, &client, &messenger, true).await?;
             }
-            fetch_and_send_asset_controller_accounts(asset_controller_pda, &client, &messenger)
-                .await?;
+            fetch_and_send_tracker_account(mint, &client, &messenger).await?;
             fetch_and_send_data_accounts(data_pda, &client, &messenger).await?;
             fetch_and_send_identity_accounts(identifier_pda, &client, &messenger).await?;
             fetch_and_send_policy_accounts(policy_pda, &client, &messenger).await?;
