@@ -1,5 +1,6 @@
 use common::utils::{
-    DATA_REGISTRY_PROGRAM_ID, IDENTIFIER_REGISTRY_PROGRAM_ID, POLICY_ENGINE_PROGRAM_ID,
+    ASSET_CONTROLLER_PROGRAM_ID, DATA_REGISTRY_PROGRAM_ID, IDENTIFIER_REGISTRY_PROGRAM_ID,
+    POLICY_ENGINE_PROGRAM_ID,
 };
 use solana_client::{
     rpc_config::RpcProgramAccountsConfig,
@@ -63,15 +64,7 @@ pub async fn fetch_and_send_program_accounts(
         .context("Failed to get current slot")?;
 
     for (account_pubkey, account_info) in accounts {
-        let account = Account {
-            lamports: account_info.lamports,
-            owner: account_info.owner,
-            data: account_info.data,
-            executable: account_info.executable,
-            rent_epoch: account_info.rent_epoch,
-        };
-
-        send_account(account_pubkey, account, current_slot, messenger)
+        send_account(account_pubkey, account_info, current_slot, messenger)
             .await
             .context(format!("Failed to send account {}", account_pubkey))?;
     }
@@ -91,6 +84,29 @@ pub async fn fetch_and_send_identity_accounts(
         messenger,
         vec![
             RpcFilterType::DataSize(IDENTITY_ACCOUNT_LEN),
+            RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
+                REGISTRY_OFFSET,
+                registry.to_bytes().to_vec(),
+            )),
+        ],
+    )
+    .await?;
+    Ok(())
+}
+
+pub async fn fetch_and_send_asset_controller_accounts(
+    registry: Pubkey,
+    client: &RpcClient,
+    messenger: &Arc<Mutex<Box<dyn plerkle_messenger::Messenger>>>,
+) -> anyhow::Result<()> {
+    const TRACKER_ACCOUNT_LEN: u64 = 473;
+
+    fetch_and_send_program_accounts(
+        ASSET_CONTROLLER_PROGRAM_ID,
+        client,
+        messenger,
+        vec![
+            RpcFilterType::DataSize(TRACKER_ACCOUNT_LEN),
             RpcFilterType::Memcmp(Memcmp::new_raw_bytes(
                 REGISTRY_OFFSET,
                 registry.to_bytes().to_vec(),
@@ -223,6 +239,7 @@ pub async fn send_account(
     let bytes = fbb.finished_data();
 
     messenger.lock().await.send(ACCOUNT_STREAM, bytes).await?;
+    sleep(Duration::from_millis(10)).await;
     info!("sent account {} to stream", pubkey);
 
     Ok(())
