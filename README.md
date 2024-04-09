@@ -39,6 +39,7 @@ To get the indexer up and running on your local machine, follow these steps:
     export INDEXER_METRICS_HOST=127.0.0.1
     export INDEXER_METRICS_PORT=8125
     ```
+    The above assumes a local postgres database `rwa`
 
 3. **Run the Indexer**:
    Navigate to the `indexer` directory and start the indexer:
@@ -51,7 +52,7 @@ To get the indexer up and running on your local machine, follow these steps:
    Configure the environment for the API:
 
     ```shell
-    export APP_DATABASE_URL=postgres://ingest@localhost/rwa
+    export APP_DATABASE_URL=postgres://postgres@localhost/rwa
     export APP_SERVER_PORT=9090
     ```
 
